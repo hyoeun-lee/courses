@@ -53,14 +53,14 @@ Content from cell 1 | Content from cell 2
 Content in the first column | Content in the second column
 
 
-  	      | Points | Percentage
+  	t     | Points | Percentage
  -------------|--------|------------
-Midterm Exam 1|	100   |	16.67%
-Midterm Exam 2|	100   |	16.67%
-Final Exam	|150	|25%
-Problem Sets| 	150	|25%
-Project|	100	|16.67%
-Total|	600	|100%
+Midterm Exam 1 |	100   |	16.67%
+Midterm Exam 2 |	100   |	16.67%
+Final Exam	| 150	| 25%
+Problem Sets | 	150	| 25%
+Project |	100	| 16.67%
+Total |	600	| 100%
 
 
 ## Exam:
