@@ -53,8 +53,8 @@ Content from cell 1 | Content from cell 2
 Content in the first column | Content in the second column
 
 
-  	t     | Points | Percentage
- -------------|--------|------------
+  	t      | Points   | Percentage
+ ------------- | -------- | ------------
 Midterm Exam 1 |	100   |	16.67%
 Midterm Exam 2 |	100   |	16.67%
 Final Exam	| 150	| 25%
@@ -95,21 +95,25 @@ Total |	600	| 100%
 ## Academic Integrity:
 	All students must abide by the campus regulations on academic integrity:
 http://studentcode.illinois.edu/article1_part4_1-401.html
+
 	Infractions of these rules (detailed on http://studentcode.illinois.edu/article1_part4_1-402.html) will not be tolerated. 
+	
 	Infractions include, but are not limited to, copying any part of another student’s homework, allowing another student to copy any part of your homework or otherwise submitting the work of others as your own.
 
 
 ## Grading Scale:
 (Rough) Scale: A : [90; 100]; B : [80; 90); C : [70; 80); D : [60; 70); F : [0; 60).
+
 A grade of A+ will be awarded to the student whose average is at least 98% and has
 the highest average in the class.
 
 # Safety:
 We have been asked by public safety to share the following information in case of weather or security emergencies.
-	Emergency Response Recommendations: 
+
+	* Emergency Response Recommendations: 
 https://police.illinois.edu/emergency-preparedness/run-hide-fight/
-	Video on Emergency Response: https://youtu.be/8j0_8PCWASE
-	 Floor Plan: https://police.illinois.edu/dpsapp/wp-content/uploads/2018/06/u0042.pdf
+	* Video on Emergency Response: https://youtu.be/8j0_8PCWASE
+	 * Floor Plan: 
 
 # General Guidelines
 	* Students are welcome to ask questions in class and participate in discussions. Please avoid disrupting during class.
