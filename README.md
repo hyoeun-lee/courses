@@ -29,24 +29,24 @@ R codes and datasets: https://www.stat.pitt.edu/stoffer/tsda/Rcode.htm
 This is an introductory course on time series analysis suitable for upper level undergraduate and entering graduate students. We will cover Chapter 1-7 of [SS], and some additional topics (chapter 8) if time allows. This will include the following:
 
 * Objective of time series analysis and examples of time series data sets
-	* *Module 1* 
-	* Time series models
-	* Stationarity, autocovariance, autocorrelation
-	* MA, AR, and linear processes
-	* Sample ACF and its properties, its connections to forecasting
-	* Estimation of μ and related large sample theory.
-	* Causality, invertibility, and AR(p) models.
-	* *Module 2*
-	* ARMA(p; q) models and their properties
-	* Linear prediction, partial ACF
-	* Forecasting stationary time series.
-	* Parameter estimation: Yule-Walker estimation, MLE
-	* Order Selection, Model diagnostics and ARIMA models.
-	* Seasonal ARIMA models.
-	* Classical decomposition of time series data, estimation of the trend and seasonality 
-	* *Module 3*
-	* Spectral Analysis: Periodicity, Spectral density
-	* Spectral Estimation: Periodogram, nonparametric and parametric estimation
+	* **Module 1** 
+		* Time series models
+		* Stationarity, autocovariance, autocorrelation
+		* MA, AR, and linear processes
+		* Sample ACF and its properties, its connections to forecasting
+		* Estimation of μ and related large sample theory.
+		* Causality, invertibility, and AR(p) models.
+	* **Module 2**
+		* ARMA(p; q) models and their properties
+		* Linear prediction, partial ACF
+		* Forecasting stationary time series.
+		* Parameter estimation: Yule-Walker estimation, MLE
+		* Order Selection, Model diagnostics and ARIMA models.
+		* Seasonal ARIMA models.
+		* Classical decomposition of time series data, estimation of the trend and seasonality 
+	* **Module 3**
+		* Spectral Analysis: Periodicity, Spectral density
+		* Spectral Estimation: Periodogram, nonparametric and parametric estimation
 
 # Grading:
 
@@ -65,21 +65,21 @@ Total |	600	| 100%
 
 ## Exam:
 * Midterm Exam 1 (2 hours exam)
-	* Midterm Exam 2 (2 hours exam)
-	* Final Exam (3 hours exam)
+* Midterm Exam 2 (2 hours exam)
+* Final Exam (3 hours exam)
 
-	* Final exam is cumulative. 
-	* No special make-up exam is given for any of the exams that are missed except for extreme health problems. Under such conditions, contact the Instructor as soon as possible. Proper documentation should be provided. 
+* Final exam is cumulative. 
+* No special make-up exam is given for any of the exams that are missed except for extreme health problems. Under such conditions, contact the Instructor as soon as possible. Proper documentation should be provided. 
 
 ## Homework:
 
 * HW will be updated after each class. Due date will be announced at least one weak ahead. Show all solutions explicitly.
-	Problem sets should be submitted …TBD 
-	* Late problem sets cannot be accepted.
-	* Discussion of homework problems is encouraged, but solutions must be written up individually. Direct copying is not acceptable.
-	* There will be 6 HW, lowest score will be dropped.
-	* Each HW is worth 30 points. 
-	* If there is an error in the homework or exam grading, you need to contact TA or me right after the homework or exam paper is returned. The grade won't be changed if it is beyond one week.
+* Problem sets should be submitted …TBD 
+* Late problem sets cannot be accepted.
+* Discussion of homework problems is encouraged, but solutions must be written up individually. Direct copying is not acceptable.
+* There will be 6 HW, lowest score will be dropped.
+* Each HW is worth 30 points. 
+* If there is an error in the homework or exam grading, you need to contact TA or me right after the homework or exam paper is returned. The grade won't be changed if it is beyond one week.
 
 ## Project:
 * It is your opportunity to use the concepts learned in this class to analyze a real-life time series. 
@@ -88,9 +88,9 @@ Total |	600	| 100%
 *	TBD (potential video presentation)
 *	Project grade will be split as
 *	Data description and preliminary analysis report (max 3 pages): 30 points
-**	Deadline: TBD
+*	Deadline: TBD
 *	Data analysis, modeling and forecasting report (max 10 pages): 70 points
-**	Deadline: TBD
+*	Deadline: TBD
 
 
 ## Academic Integrity:
@@ -118,9 +118,9 @@ https://police.illinois.edu/emergency-preparedness/run-hide-fight/
 
 # General Guidelines
 * Students are welcome to ask questions in class and participate in discussions. Please avoid disrupting during class.
-	* All class announcements will also be posted on the Compass2g website.
-	* Cell phones should be muted or turned off during lectures, and kept away during exams. Texting is not allowed during class. 
-	* Lecture notes will not be provided for missed classes. If you missed a class, it is your responsibility to read the book, borrow notes from classmates, and ask questions to the TA and/or the Instructor to keep up. 
-	* To do well in this course you should keep up with lectures, readings and assignments. If you feel you are falling behind please contact the TA and/or the Instructor as soon as possible.
+* All class announcements will also be posted on the Compass2g website.
+* Cell phones should be muted or turned off during lectures, and kept away during exams. Texting is not allowed during class. 
+* Lecture notes will not be provided for missed classes. If you missed a class, it is your responsibility to read the book, borrow notes from classmates, and ask questions to the TA and/or the Instructor to keep up. 
+* To do well in this course you should keep up with lectures, readings and assignments. If you feel you are falling behind please contact the TA and/or the Instructor as soon as possible.
 * This syllabus may be amended at any time. Changes will be announced in the lectures and posted 
 
