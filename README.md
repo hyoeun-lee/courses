@@ -29,12 +29,14 @@ R codes and datasets: https://www.stat.pitt.edu/stoffer/tsda/Rcode.htm
 This is an introductory course on time series analysis suitable for upper level undergraduate and entering graduate students. We will cover Chapter 1-7 of [SS], and some additional topics (chapter 8) if time allows. This will include the following:
 
 * Objective of time series analysis and examples of time series data sets
+	* *Module 1* 
 	* Time series models
 	* Stationarity, autocovariance, autocorrelation
 	* MA, AR, and linear processes
 	* Sample ACF and its properties, its connections to forecasting
 	* Estimation of μ and related large sample theory.
 	* Causality, invertibility, and AR(p) models.
+	* *Module 2*
 	* ARMA(p; q) models and their properties
 	* Linear prediction, partial ACF
 	* Forecasting stationary time series.
@@ -42,8 +44,9 @@ This is an introductory course on time series analysis suitable for upper level 
 	* Order Selection, Model diagnostics and ARIMA models.
 	* Seasonal ARIMA models.
 	* Classical decomposition of time series data, estimation of the trend and seasonality 
-	* Spectral Analysis
-	* Spectral Estimation 
+	* *Module 3*
+	* Spectral Analysis: Periodicity, Spectral density
+	* Spectral Estimation: Periodogram, nonparametric and parametric estimation
 
 # Grading:
 
