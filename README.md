@@ -47,8 +47,8 @@ This is an introductory course on time series analysis suitable for upper level 
 
 # Grading:
 
-  	      |Points |Percentage
- -------------|-------| ------------
+  	      | Points | Percentage
+ -------------|--------|------------
 Midterm Exam 1|	100   |	16.67%
 Midterm Exam 2|	100   |	16.67%
 Final Exam	|150	|25%
