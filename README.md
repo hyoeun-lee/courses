@@ -28,7 +28,7 @@ R codes and datasets: https://www.stat.pitt.edu/stoffer/tsda/Rcode.htm
 # Course Content:
 This is an introductory course on time series analysis suitable for upper level undergraduate and entering graduate students. We will cover Chapter 1-7 of [SS], and some additional topics (chapter 8) if time allows. This will include the following:
 
-	* Objective of time series analysis and examples of time series data sets
+* Objective of time series analysis and examples of time series data sets
 	* Time series models
 	* Stationarity, autocovariance, autocorrelation
 	* MA, AR, and linear processes
@@ -61,7 +61,7 @@ Total |	600	| 100%
 
 
 ## Exam:
-	* Midterm Exam 1 (2 hours exam)
+* Midterm Exam 1 (2 hours exam)
 	* Midterm Exam 2 (2 hours exam)
 	* Final Exam (3 hours exam)
 
@@ -69,7 +69,8 @@ Total |	600	| 100%
 	* No special make-up exam is given for any of the exams that are missed except for extreme health problems. Under such conditions, contact the Instructor as soon as possible. Proper documentation should be provided. 
 
 ## Homework:
-	* HW will be updated after each class. Due date will be announced at least one weak ahead. Show all solutions explicitly.
+
+* HW will be updated after each class. Due date will be announced at least one weak ahead. Show all solutions explicitly.
 	Problem sets should be submitted …TBD 
 	* Late problem sets cannot be accepted.
 	* Discussion of homework problems is encouraged, but solutions must be written up individually. Direct copying is not acceptable.
@@ -90,12 +91,12 @@ Total |	600	| 100%
 
 
 ## Academic Integrity:
-	All students must abide by the campus regulations on academic integrity:
+All students must abide by the campus regulations on academic integrity:
 http://studentcode.illinois.edu/article1_part4_1-401.html
 
-	Infractions of these rules (detailed on http://studentcode.illinois.edu/article1_part4_1-402.html) will not be tolerated. 
+Infractions of these rules (detailed on http://studentcode.illinois.edu/article1_part4_1-402.html) will not be tolerated. 
 	
-	Infractions include, but are not limited to, copying any part of another student’s homework, allowing another student to copy any part of your homework or otherwise submitting the work of others as your own.
+Infractions include, but are not limited to, copying any part of another student’s homework, allowing another student to copy any part of your homework or otherwise submitting the work of others as your own.
 
 
 ## Grading Scale:
@@ -107,13 +108,13 @@ the highest average in the class.
 # Safety:
 We have been asked by public safety to share the following information in case of weather or security emergencies.
 
-	* Emergency Response Recommendations: 
+* Emergency Response Recommendations: 
 https://police.illinois.edu/emergency-preparedness/run-hide-fight/
 	* Video on Emergency Response: https://youtu.be/8j0_8PCWASE
 	 * Floor Plan: 
 
 # General Guidelines
-	* Students are welcome to ask questions in class and participate in discussions. Please avoid disrupting during class.
+* Students are welcome to ask questions in class and participate in discussions. Please avoid disrupting during class.
 	* All class announcements will also be posted on the Compass2g website.
 	* Cell phones should be muted or turned off during lectures, and kept away during exams. Texting is not allowed during class. 
 	* Lecture notes will not be provided for missed classes. If you missed a class, it is your responsibility to read the book, borrow notes from classmates, and ask questions to the TA and/or the Instructor to keep up. 
