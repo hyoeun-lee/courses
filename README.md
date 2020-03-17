@@ -47,20 +47,11 @@ This is an introductory course on time series analysis suitable for upper level 
 
 # Grading:
 
-First Header | Second Header
------------- | -------------
-Content from cell 1 | Content from cell 2
-Content in the first column | Content in the second column
 
 
- First H   | Second Header | Third Header
------------- | ------------- | -------------
-Content from cell 1 | Content from cell 2 | content from cell 3
-Content in the first column | Content in the second column | content 3rd column
 
-
-  	t      | Points   | Percentage
- ------------- | -------- | ------------
+Category            | Points   | Percentage
+------------- | -------- | ------------
 Midterm Exam 1 |	100   |	16.67%
 Midterm Exam 2 |	100   |	16.67%
 Final Exam	| 150	| 25%
