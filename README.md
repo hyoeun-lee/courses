@@ -16,8 +16,10 @@ TBD
 
 # Textbook (required)
  * Time Series: A Data Analysis Approach Using R, 1st Edition, Robert Shumway, David Stoffer, Chapman and Hall/CRC
- 
  * Resources: https://www.stat.pitt.edu/stoffer/tsda/
+ 
+ ![Image of Book Cover](https://github.com/hyoeun-lee/STAT429_FALL/blob/master/9780367221096.jpg?raw=true)
+ 
  
 # Software:
 * R Project, which can be downloaded at http://www.r-project.org
