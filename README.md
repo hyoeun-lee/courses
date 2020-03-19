@@ -2,14 +2,14 @@
 UIUC STAT429 Course 2020 Fall
 
 # Lecture Time / Location
-Lecture Time: MWF 3:00-3:50 PM
-Location: 1090 Lincoln Hall
+* Lecture Time: MWF 3:00-3:50 PM
+* Location: 1090 Lincoln Hall
 
 # Course Staff
 ## Instructor
-Hyoeun Lee, Ph.D., Visiting Assistant Professor
-Email: hyoeun@illinois.edu
-Office Hours: TBD
+* Hyoeun Lee, Ph.D., Visiting Assistant Professor
+* Email: hyoeun@illinois.edu
+* Office Hours: TBD
 
 ## Teaching Assistant/Grader
 TBD
@@ -19,14 +19,24 @@ TBD
  * Resources: https://www.stat.pitt.edu/stoffer/tsda/
  
 # Software:
-R Project, which can be downloaded at http://www.r-project.org
-R codes and datasets: https://www.stat.pitt.edu/stoffer/tsda/Rcode.htm
+* R Project, which can be downloaded at http://www.r-project.org
+* R codes and datasets: https://www.stat.pitt.edu/stoffer/tsda/Rcode.htm
 
 # Pre-requisites: 
-**STAT 410**. In particular, the students should be familiar with the following concepts: conditional probability, distribution of random variables, first and second order moments, sampling distributions, central limit theorem, maximum likelihood estimation and hypothesis testing, linear regression and analysis of variance.
+**STAT 410**. In particular, the students should be familiar with the following concepts: 
+* conditional probability, 
+* distribution of random variables, 
+* first and second order moments, 
+* sampling distributions, 
+* central limit theorem, 
+* maximum likelihood estimation and hypothesis testing, 
+* linear regression
+* analysis of variance.
 
 # Course Content:
-This is an introductory course on time series analysis suitable for upper level undergraduate and entering graduate students. We will cover Chapter 1-7 of [SS], and some additional topics (chapter 8) if time allows. This will include the following:
+This is an introductory course on time series analysis suitable for upper level undergraduate and entering graduate students.
+
+We will cover Chapter 1-7 of [SS], and some additional topics (chapter 8) if time allows. This will include the following:
 
 * Objective of time series analysis and examples of time series data sets
 	* **Module 1** 
@@ -102,8 +112,15 @@ Infractions of these rules (detailed on http://studentcode.illinois.edu/article1
 Infractions include, but are not limited to, copying any part of another student’s homework, allowing another student to copy any part of your homework or otherwise submitting the work of others as your own.
 
 
-## Grading Scale:
-(Rough) Scale: A : [90; 100]; B : [80; 90); C : [70; 80); D : [60; 70); F : [0; 60).
+## Grading Scale (Rough):
+
+Letter Grade | Scale
+------|----
+A | [90; 100]
+B | [80; 90)
+C |  [70; 80) 
+D | [60; 70) 
+F | [0; 60)
 
 A grade of A+ will be awarded to the student whose average is at least 98% and has
 the highest average in the class.
