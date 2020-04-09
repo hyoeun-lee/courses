@@ -3,7 +3,7 @@ UIUC STAT429 Course 2020 Fall
 
 # Lecture Time / Location
 * Lecture Time: MWF 3:00-3:50 PM
-* Location: 1090 Lincoln Hall
+* Location: 1090 Lincoln Hall (hopefully...)
 
 # Course Staff
 ## Instructor
