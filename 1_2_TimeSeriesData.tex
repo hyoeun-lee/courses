@@ -1,0 +1,171 @@
+
+\documentclass[12pt]{article} % use larger type; default would be 10pt
+\usepackage[square]{natbib}
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath,amssymb}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\usepackage{color}
+\usepackage{pdfpages}
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+%\geometry{a4paper} % or letterpaper (US) or a5paper or....
+\geometry{margin=1in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+ \newcommand{\eps}{\varepsilon}
+\usepackage{graphicx} % support the \includegraphics command and options
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\fancyhf{}
+\renewcommand{\headrulewidth}{1pt} % customise the layout...
+\lhead{STAT 429 Time Series Analysis}\chead{FALL 2020}\rhead{Instructor: Hyoeun Lee}
+\lfoot{}\cfoot{}\rfoot{Page \thepage}
+
+
+
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+
+\definecolor{Red}{rgb}{1,0,0}
+\newcommand{\Red}{\color{Red}}
+\definecolor{Blue}{rgb}{0,0,1}
+\newcommand{\Blue}{\color{Blue}}
+
+
+%%%%%%%THEOREM 
+\usepackage{thmtools,thm-restate}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+%\newenvironment{definition}[1][Definition]{\begin{trivlist}
+%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Example]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Remark]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newcommand{\qed}{\nobreak \ifvmode \relax \else
+      \ifdim\lastskip<1.5em \hskip-\lastskip
+      \hskip1.5em plus0em minus0.5em \fi \nobreak
+      \vrule height0.75em width0.5em depth0.25em\fi}
+   
+   
+   
+   
+%   \usepackage{nopageno}   
+ %%%%%%%%%%%%%%
+
+%\linespread{2}
+
+
+
+
+
+%%% END Article customizations
+
+
+
+%%% The "real" document content comes below...
+
+
+\date{}
+
+
+%\title{Chapter 1}
+
+\begin{document}
+
+
+
+
+\textbf{\Large 1.2 Time Series Elements: Time Series Data}
+%\textbf{\Large Chapter 1 Time Series Elements}\\
+%\textbf{\large 1.1 Introduction}
+
+\medskip
+
+
+%\noindent
+\fbox{%
+    \parbox{0.9\textwidth}{%
+ 
+
+
+\textbf{Learning outcome of Section 1.2}
+
+\begin{itemize}
+\item Understand/ Recall basic R commands for this course 
+\item Plot Time Series Data with R
+\item Analyze the Time Series Plot (visual inspection)
+\item Understand concept of statistical model
+\end{itemize}
+
+
+
+    }%
+}
+
+
+
+
+\medskip
+\medskip
+
+\textbf{Recall}
+
+\begin{itemize}
+	\item Time series: a discrete stochastic process
+	\item There is a probability law that governs every stochastic process
+	\item Model: approximation of such a probability law.
+\end{itemize}
+
+\medskip
+\textbf{Time Series Data}
+
+\begin{itemize}
+	\item Example 1.1, 1.3: JJ QEPS, DJIA\\ log-transformation, growth rate, volatility
+	\item Example 1.2: Climate data\\ Description of trend, is the trend linear?
+	\item Example 1.4: El Ni{\~n}o \\ Cycle and frequency
+	\item Example 1.5: Predator-Prey Interactions \\  Relationship between two Time Series
+\end{itemize}
+
+\textbf{3 things important for modelling: Mean, Variance, Dependence}
+
+many time series analysis comes to handling these 3 things well.
+
+\hrulefill
+
+Next: 1.3 Time Series models
+\begin{itemize}
+	\item Example of models for time series:
+	\item white noise, smoothing, autoregression, random walk, signal+noise
+\end{itemize}
+
+\end{document}

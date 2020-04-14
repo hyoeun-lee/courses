@@ -1,0 +1,194 @@
+
+\documentclass[12pt]{article} % use larger type; default would be 10pt
+\usepackage[square]{natbib}
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath,amssymb}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\usepackage{color}
+\usepackage{pdfpages}
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+%\geometry{a4paper} % or letterpaper (US) or a5paper or....
+\geometry{margin=1in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+ \newcommand{\eps}{\varepsilon}
+\usepackage{graphicx} % support the \includegraphics command and options
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\fancyhf{}
+\renewcommand{\headrulewidth}{1pt} % customise the layout...
+\lhead{STAT 429 Time Series Analysis}\chead{FALL 2020}\rhead{Instructor: Hyoeun Lee}
+\lfoot{}\cfoot{}\rfoot{Page \thepage}
+
+
+
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+
+\definecolor{Red}{rgb}{1,0,0}
+\newcommand{\Red}{\color{Red}}
+\definecolor{Blue}{rgb}{0,0,1}
+\newcommand{\Blue}{\color{Blue}}
+
+
+%%%%%%%THEOREM 
+\usepackage{thmtools,thm-restate}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+%\newenvironment{definition}[1][Definition]{\begin{trivlist}
+%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Example]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Remark]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newcommand{\qed}{\nobreak \ifvmode \relax \else
+      \ifdim\lastskip<1.5em \hskip-\lastskip
+      \hskip1.5em plus0em minus0.5em \fi \nobreak
+      \vrule height0.75em width0.5em depth0.25em\fi}
+   
+   
+   
+   
+%   \usepackage{nopageno}   
+ %%%%%%%%%%%%%%
+
+%\linespread{2}
+
+
+
+
+
+%%% END Article customizations
+
+
+
+%%% The "real" document content comes below...
+
+
+\date{}
+
+
+%\title{Chapter 1}
+
+\begin{document}
+
+
+
+
+\textbf{\Large 1.3 Time Series Elements: Time Series Models}
+%\textbf{\Large Chapter 1 Time Series Elements}\\
+%\textbf{\large 1.1 Introduction}
+
+\medskip
+
+
+%\noindent
+\fbox{%
+    \parbox{0.9\textwidth}{%
+ 
+
+
+\textbf{Learning outcome of Section 1.3}
+
+\begin{itemize}
+\item Understand several basic models for time series
+\end{itemize}
+
+
+
+    }%
+}
+
+
+
+
+\medskip
+\medskip
+
+\noindent \textbf{White Noise Model}
+
+\begin{itemize}
+	\item Example 1.7
+	\item Collection of uncorrelated random variables, $W_t$.
+	\item $W_t$: Random variable with mean 0 and finite variance $\sigma_W^2$.
+	\item Notation: $W_t \sim wn(0,\sigma_W^2)$
+	\item Used as a model for noise in engineering applications
+\end{itemize}
+
+\noindent \textbf{Moving Average (MA) Model}
+\begin{itemize}
+	\item Example 1.8
+	\item Moving average of white noise
+	\item $X_t = \frac{1}{2} (W_{t-1} + W_t )$
+	\item Interpret the time series as linear combination of white noise
+	\item could be used for smoothing (in Section 3.3)
+\end{itemize}
+
+
+\noindent\textbf{Autoregression (AR) Model}
+\begin{itemize}
+	\item Example 1.9, $X_t = 1.5 X_{t-1} -0.75 X_{t-2} + W_t$
+	\item Regression or prediction of the current value ($X_t$) as a function of the past two values.
+	\item periodic bahavior
+\end{itemize}
+
+\noindent\textbf{Random Walk with drift}
+\begin{itemize}
+	\item $X_t = \delta + X_{t-1} + W_t$
+	\item Example 1.10, Example 1.2
+	\item Random walk: value at time $t$ is the value of the series at time $t-1$ plus a completely random movement determined by $W_t$. 
+	\item $\delta$: drift
+	\item With initial condition $x_0=0$, $$X_t=\delta t + \sum_{j=1}^{t} W_j$$
+\end{itemize}
+
+\noindent\textbf{Signal Plus noise}
+\begin{itemize}
+	\item Example 1.11
+	\item $X_t = 2 \cos (2\pi \frac{t+15}{50}) + w_t$
+	\item $X_t= A \cos (2\pi \omega t+\phi)+w_t$
+	\item $A$: amplitude, $\omega$: frequency, $\phi$: phase shift. 
+\end{itemize}
+
+
+\hrulefill
+
+{\Red
+\begin{itemize}
+	\item Read Appendix B.1, B.2, B.3 before next class
+	\item HW: Problems 1.2(a,b,c), 1.3(a),  1.4(a) 
+\end{itemize}
+}
+
+
+
+\end{document}

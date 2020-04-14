@@ -1,0 +1,333 @@
+
+\documentclass[12pt]{article} % use larger type; default would be 10pt
+\usepackage[square]{natbib}
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath,amssymb}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\sigw}{\sigma_w^2}
+
+\usepackage{color}
+\usepackage{pdfpages}
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+%\geometry{a4paper} % or letterpaper (US) or a5paper or....
+\geometry{margin=1in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+ \newcommand{\eps}{\varepsilon}
+\usepackage{graphicx} % support the \includegraphics command and options
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\fancyhf{}
+\renewcommand{\headrulewidth}{1pt} % customise the layout...
+\lhead{STAT 429 Time Series Analysis}\chead{FALL 2020}\rhead{Instructor: Hyoeun Lee}
+\lfoot{}\cfoot{}\rfoot{Page \thepage}
+
+
+
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+
+\definecolor{Red}{rgb}{1,0,0}
+\newcommand{\Red}{\color{Red}}
+\definecolor{Blue}{rgb}{0,0,1}
+\newcommand{\Blue}{\color{Blue}}
+
+
+%%%%%%%THEOREM 
+\usepackage{thmtools,thm-restate}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+%\newenvironment{definition}[1][Definition]{\begin{trivlist}
+%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Example]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Remark]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newcommand{\qed}{\nobreak \ifvmode \relax \else
+      \ifdim\lastskip<1.5em \hskip-\lastskip
+      \hskip1.5em plus0em minus0.5em \fi \nobreak
+      \vrule height0.75em width0.5em depth0.25em\fi}
+   
+   
+   
+%   \usepackage{nopageno}   
+ %%%%%%%%%%%%%%
+
+%\linespread{2}
+
+
+
+
+
+%%% END Article customizations
+
+
+
+%%% The "real" document content comes below...
+
+
+\date{}
+
+
+%\title{Chapter 1}
+
+\begin{document}
+
+
+
+
+\textbf{\Large 2.1  Correlation and Stationary Time Series: \\ Measuring Dependence}
+%\textbf{\Large Chapter 1 Time Series Elements}\\
+%\textbf{\large 1.1 Introduction}
+
+\medskip
+
+
+%\noindent
+\fbox{%
+    \parbox{0.9\textwidth}{%
+ 
+
+
+\textbf{Learning outcome of Section 2.1}
+
+\begin{itemize}
+\item Understand mean function of time series and its relationship to the trend
+\item Understand autocovariance, autocorrelation function and its relationship to volatility and dependence
+\item Understand cross-covariance, cross-correlation function and its role
+\end{itemize}
+
+
+
+    }%
+}
+
+
+
+
+\medskip
+\medskip
+
+\noindent\textbf{Recall}
+
+Time Series: 
+\begin{itemize}
+	\item a Discrete Stochastic Process
+	\item Denote: $\{X_t\}_{t\geq 0}$, $t$: time index
+	\item ${t\geq 0}$ or $ t=0, \pm 1, \pm 2, \pm 3, \dots $ (depends on starting point)
+	\item 3 things important for modeling:  Mean, Variance, Dependence
+\end{itemize}
+
+\noindent \textbf{Properties of the Mean, Variance and Covariance}
+\begin{itemize}
+\item $\E[aX+bY+c]=a\E[X]+b\E[Y]+c$
+\item $Var(X)=\E[(X-\E[X])^2]=\E[X^2]-(\E[X])^2$
+\item $Var(a+bX)=b^2Var(X)$
+\item If $X$ and $Y$ are independent $Var(X+Y)=Var(X)+Var(Y)$
+\item $Cov(X,Y)=\E[(X-\E[X])(Y-\E[Y])]$ 
+\item  $Cov(a+bX,c+dY)=bd Cov(X,Y)$
+\item $Var(X+Y)=Var(X)+Var(Y)+2Cov(X,Y)$
+\item $Cov(X+Y,Z)=Cov(X,Z)+Cov(Y,Z)$
+\item $Cov(X,X)=Var(X)$
+\item $Cov(X,Y)=Cov(Y,X)$
+\end{itemize}
+
+
+\newpage
+
+\noindent\textbf{Mean Function}
+$$\mu_X(t)= \mathbb{E}[X_t]$$
+
+
+\begin{enumerate}
+	\item $X_t = \frac{1}{2} (W_{t-1} + W_t )$
+	\item[] $\mu_{X} (t)=0$ 
+	\item $X_t=\delta t + \sum_{j=1}^{t} W_j$
+	\item[] $\mu_{X} (t)= \delta t$
+	\item $X_t = 2 \cos (2\pi \frac{t+15}{50}) + W_t$
+	\item[] $\mu_{X} (t)= 2 \cos (2\pi \frac{t+15}{50})$
+\end{enumerate}
+
+\medskip
+
+
+\noindent\textbf
+{Autocovariance function}
+
+\begin{align*}
+	\gamma_X ({t,s})=Cov(X_t,X_s)=&\E[(X_t-\mu_X(t))(X_s-\mu_X(s))]\\
+	=&\E[X_t X_s]-\mu_X(t) \mu_X(s)
+\end{align*}
+
+
+
+
+
+\begin{enumerate}
+	\item Autocovariance of White Noise:
+	\begin{equation}
+		\gamma_{W} (t,s)= Cov (W_t, W_s) = 
+		\begin{cases}
+			\sigma_W^2 & s=t\\
+			0 & s\neq t.
+		\end{cases}
+	\end{equation}
+
+	\item $X_t = \frac{1}{2} (W_{t-1} + W_t )$
+	\item[] 
+	\begin{equation}
+		\gamma_{X} (t,s)=\begin{cases}
+			\frac{1}{2} \sigw & s=t,\\
+			\frac{1}{4}	\sigw & |t-s|=1,\\
+			0 & |t-s|>1.
+		\end{cases}
+	\end{equation}
+	\item $X_t=\delta t + \sum_{j=1}^{t} W_j$
+	\item[] 
+	\begin{equation}
+		\gamma_{X} (t,s)= Cov \left( \delta t + \sum_{j=1}^{t} W_j, \delta s + \sum_{j=1}^{s} W_j\right)
+		=\min(s,t) \sigw
+	\end{equation}
+	\item $X_t = 2 \cos (2\pi \frac{t+15}{50}) + W_t$
+	\item[] 
+	\begin{equation}
+		\gamma_{X} (t,s)=\sigw
+	\end{equation}
+\end{enumerate}
+
+\medskip
+
+
+\noindent\textbf
+{Autocorrelation function}
+
+$$\rho_{t,s}= Corr(Y_t,Y_s)$$
+$ t,s=0, \pm 1, \pm 2, \pm 3, \dots $
+where $$Corr(Y_t,Y_s)=\dfrac{Cov(Y_t,Y_s)}{\sqrt{Var(Y_t) Var(Y_s)}}=
+\dfrac{\gamma_{t,s}}{\sqrt{\gamma_{t,t }\gamma_{s,s}}} $$
+
+Covariance and correlation are a measure of \bf{linear} relationship between two random variables.
+
+
+\newpage
+{Important properties of the autocorrelation and autocovariance function}
+\begin{table}
+\begin{tabular}{cc}
+$\gamma_{t,t}=Var(Y_t)$ & $\rho_{t,t}=1$\\ \\
+$\gamma_{t,s}=\gamma_{s,t}$ & $\rho_{t,s}=\rho_{s,t}$\\ \\
+$|\gamma_{t,s}|\leq \sqrt{\gamma_{t,t} \gamma_{s,s}}$ & $|\rho_{t,s}|\leq 1$
+\end{tabular}
+\end{table}
+
+%
+%{Assignments}
+%Attempt the following problems:
+%\begin{enumerate} 
+%\item Use the Cauchy $–$ Schwarz inequality to test the property:
+%$$|\gamma_{t,s}|\leq \sqrt{\gamma_{t,t }\gamma_{s,s}}$$
+%\item Proof that: 
+%$$ Cov[\Sigma_{i=1}^m c_i Y_{t_i},\Sigma_{j=1}^n d_j Y_{s_j} ]=
+%\Sigma_{i=1}^m \Sigma_{j=1}^n c_i d_j Cov(Y_{t_i},Y_{s_j}) $$
+%for constants $c_1,c_2,\ldots, c_m$, $d_1,d_2,\ldots, d_n$ and time points $t_1,t_2,\ldots,t_m$ and $s_1,s_2,\ldots,s_n$
+%\item Obtain an expression for $$Var[\Sigma_{i=1}^n c_iY_{t_i}]$$ as a special case
+%\item Assume: $E(X)=4$,$Var(X)=11$,$E(Y)=0$,$Var(Y)=5$, and $Corr(X,Y)=0.3$. Find:
+%\begin{itemize}
+%\item $Var(X+Y)$
+%\item $Cov(X,X+Y)$
+%\item $Corr(X+Y,X-Y)$
+%\end{itemize}
+%\end{enumerate}
+
+%
+%{Assignments (Cont.)}
+%\only<1>{
+%Use \textsf{R} for the following problems: 
+%\begin{enumerate} 
+%\item Plot the Time Series EQ5 and EXP6 of package {\bf astsa} in a similar format as example 6 in lecture notes Week 1 Class 1 (use \text{help(EQ5)} and \text{help(EXP6)} for more information on the data sets)
+%\item Plot the two data sets on the same graph using different colors or different line types and comment on the results
+%\item Consider a signal-plus-noise model of the general form $x_t = s_t + w_t$,
+%where $w_t$ is a Gaussian white noise with $\sigma^2_w=1$. Simulate and plot $n = 200$
+%observations from each of the following two models:
+%\end{enumerate}}
+%\only<2>{
+%\begin{enumerate}[a]
+%\item $x_t= s_t + w_t$, for $t=1,2,\ldots,200$, where:
+%\[
+%s_t= \left\{
+%\begin{array}{ll}
+%0, & t=1,\ldots, 100\\
+%10\exp\{-\frac{(t-100)}{20}\}\cos(2\pi t/4), & t=101,\ldots, 200
+%\end{array}
+%\right.
+%\]
+%\item $x_t= s_t + w_t$, for $t=1,2,\ldots,200$, where:
+%\[
+%s_t= \left\{
+%\begin{array}{ll}
+%0, & t=1,\ldots, 100\\
+%10\exp\{-\frac{(t-100)}{200}\}\cos(2\pi t/4), & t=101,\ldots, 200
+%\end{array}
+%\right.
+%\]
+%\item Compare the general appearance of series (a) and (b) with the Time Series plotted in 1). In addition plot or sketch the signal modulators $\exp\{-t/20\}$ and  $\exp\{-t/200\}$
+%\end{enumerate}
+%}
+%
+%
+%[fragile]
+%Hint for the last problem:
+%\begin{verbatim}
+%s = c(rep(0,100), 10*exp(-(1:100)/20)*cos(2*pi*1:100/4))
+%x = ts(s + rnorm(200, 0, 1))
+%\end{verbatim}
+
+
+
+
+
+
+
+\hrulefill
+
+\medskip
+
+Next: 
+
+
+\hrulefill
+
+Next: 2.2 
+
+
+
+\end{document}

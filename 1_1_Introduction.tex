@@ -1,0 +1,200 @@
+
+\documentclass[12pt]{article} % use larger type; default would be 10pt
+\usepackage[square]{natbib}
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath,amssymb}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\usepackage{color}
+\usepackage{pdfpages}
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+%\geometry{a4paper} % or letterpaper (US) or a5paper or....
+\geometry{margin=1in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+ \newcommand{\eps}{\varepsilon}
+\usepackage{graphicx} % support the \includegraphics command and options
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\fancyhf{}
+\renewcommand{\headrulewidth}{1pt} % customise the layout...
+\lhead{STAT 429 Time Series Analysis}\chead{FALL 2020}\rhead{Instructor: Hyoeun Lee}
+\lfoot{}\cfoot{}\rfoot{Page \thepage}
+
+
+
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+
+\definecolor{Red}{rgb}{1,0,0}
+\newcommand{\Red}{\color{Red}}
+\definecolor{Blue}{rgb}{0,0,1}
+\newcommand{\Blue}{\color{Blue}}
+
+
+%%%%%%%THEOREM 
+\usepackage{thmtools,thm-restate}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+%\newenvironment{definition}[1][Definition]{\begin{trivlist}
+%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Example]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Remark]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newcommand{\qed}{\nobreak \ifvmode \relax \else
+      \ifdim\lastskip<1.5em \hskip-\lastskip
+      \hskip1.5em plus0em minus0.5em \fi \nobreak
+      \vrule height0.75em width0.5em depth0.25em\fi}
+   
+   
+   
+   
+%   \usepackage{nopageno}   
+ %%%%%%%%%%%%%%
+
+%\linespread{2}
+
+
+
+
+
+%%% END Article customizations
+
+
+
+%%% The "real" document content comes below...
+
+
+\date{}
+
+
+%\title{Chapter 1}
+
+\begin{document}
+
+
+
+
+\textbf{\Large 1.1 Time Series Elements: Introduction}
+%\textbf{\Large Chapter 1 Time Series Elements}\\
+%\textbf{\large 1.1 Introduction}
+
+\medskip
+
+
+%\noindent
+\fbox{%
+    \parbox{0.9\textwidth}{%
+       \textbf{General Learning Outcome of this Course:}
+\begin{itemize}
+\item Understand and model the stochastic mechanism\\ that generates an observed time series;
+\item Predict or forecast its future values.
+\end{itemize}
+
+
+\textbf{Learning outcome of Section 1.1}
+\begin{itemize}
+\item Understand definition of time series
+\item Understand the concept of stochastic process
+%\item Plot the time series data with R
+\end{itemize}
+
+    }%
+}
+
+
+
+
+\medskip
+\medskip
+
+\textbf{Time Series Features:}
+\begin{itemize}
+\item Data collected over time.
+\item Data can not be assumed independent. 
+\item Time series models incorporate time dependence.
+\end{itemize}
+
+
+\textbf{Time series applications}
+\begin{itemize}
+\item Economics \\(monthly unemployment figures, weekly interest rates, daily stock market values); 
+\item Meteorology \\(annual precipitation and drought index, global annual temperature series); 
+\item Agriculture \\(annual crop production,  food consumption, cultivated area);
+\item  Biological Sciences\\ (cell tissue hourly growth rate, daily seed germination rate); 
+\item Ecology \\(annual species abundance, monthly deforestation rate, annual carbon stock rate);
+\item Medicine\\ (daily blood pressure measurements, brain MRI time series, number of annual breast cancer cases)
+\end{itemize}
+\medskip
+
+\newpage
+
+\textbf{Time Series: a Discrete Stochastic Process}
+
+Stochastic Process: collection of Random Variables.\\
+\indent Denote: $\{{X}_t\}_{t\geq 0}$, $t$: time index
+
+
+
+\begin{itemize}
+	\item E.g. Discrete-time stochastic Process
+		\begin{enumerate}
+			\item Humidity in Illini Union at 3pm on day $t$
+			\item Amazon stock price at closing on day $t$
+		\end{enumerate}
+	\item E.g. Continuous-time stochastic Process
+		\begin{enumerate}
+			\item Humidity in Illini Union at time instant $t$
+			\item Amazon stock price at time instant $t$
+		\end{enumerate}
+	\item Why do we model? To reduce uncertainty.
+	\item There is a {\color{red} probability law} that governs each stochastic process.
+	\item A model is an approximation of such a probability law.
+	\item A model is estimated (usually) using past data.
+\end{itemize}
+
+
+\hrulefill
+
+Next section: 1.2 Time Series Elements: Time Series data\\
+\begin{itemize}
+\item Introduction to R (brief)
+\item Plot Time Series Data with R
+\item Example of models
+\end{itemize}
+
+
+
+
+
+\end{document}
