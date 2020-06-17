@@ -23,8 +23,7 @@ TBD
 ## Recommended
 * Time Series Analysis: With Applications in R, 2nd Edition,  Jonathan D. Cryer, Kung-Sik Chan, Springer
 
-
-Second Edition
+ ![Image of Book Cover](https://github.com/hyoeun-lee/STAT429_FALL/blob/master/BookCover_cryer_chan.jpg?raw=true)
  
  
  
