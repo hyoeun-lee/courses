@@ -14,13 +14,13 @@ UIUC STAT429 Course 2020 Fall
 TBD
 
 # Textbook 
-## Required
+## Required [SS]
  * Time Series: A Data Analysis Approach Using R, 1st Edition, Robert Shumway, David Stoffer, Chapman and Hall/CRC
  * Resources: https://www.stat.pitt.edu/stoffer/tsda/
  
  ![Image of Book Cover](https://github.com/hyoeun-lee/STAT429_FALL/blob/master/9780367221096.jpg?raw=true)
 
-## Recommended
+## Recommended [CC]
 * Time Series Analysis: With Applications in R, 2nd Edition,  Jonathan D. Cryer, Kung-Sik Chan, Springer
 
  ![Image of Book Cover](https://github.com/hyoeun-lee/STAT429_FALL/blob/master/BookCover_cryer_chan.jpg?raw=true)
@@ -46,44 +46,44 @@ TBD
 # Course Content:
 This is an introductory course on time series analysis suitable for upper level undergraduate and entering graduate students.
 
-We will cover Chapter 1-7 of [SS], and some additional topics (chapter 8) if time allows. This will include the following:
+We will cover Chapter 1-7 of [SS], Chapter 1-10, 13-14 of [CC]. This will include the following:
 
 * Objective of time series analysis and examples of time series data sets
-	* **Module 1** 
+	* **Module 1:Basics and fundamental concepts of Time Series ** 
 		* Time series models
 		* Stationarity, autocovariance, autocorrelation
-		* MA, AR, and linear processes
-		* Sample ACF and its properties, its connections to forecasting
-		* Estimation of μ and related large sample theory.
+		* Regression, Trend
+	* **Module 2: Major models for stationary and non-stationary time series **
+		* MA, AR, and linear processes.
+		* Sample ACF, PACF and its properties, its connections to model specification.
 		* Causality, invertibility, and AR(p) models.
-	* **Module 2**
 		* ARMA(p; q) models and their properties
-		* Linear prediction, partial ACF
-		* Forecasting stationary time series.
+		* ARIMA(p;d;q) models and their properties
+		* Seasonal ARIMA models and their properites
+	* **Module 3: Model fitting, diagnostifcs, forecasting **
 		* Parameter estimation: Yule-Walker estimation, MLE
-		* Order Selection, Model diagnostics and ARIMA models.
-		* Seasonal ARIMA models.
-		* Classical decomposition of time series data, estimation of the trend and seasonality 
-	* **Module 3**
-		* Spectral Analysis: Periodicity, Spectral density
+		* Order Selection, Model diagnostics
+		* Forecasting
+	* **Module 4: Spectral Analysis**
+		* Periodicity, Spectral density
 		* Spectral Estimation: Periodogram, nonparametric and parametric estimation
 
 # Grading:
-
+(TBD)
 
 
 
 Category            | Points   | Percentage
 ------------- | -------- | ------------
-Midterm Exam 1 |	100   |	16.67%
-Midterm Exam 2 |	100   |	16.67%
-Final Exam	| 150	| 25%
-Problem Sets | 	150	| 25%
-Project |	100	| 16.67%
+Exam 1 |	100   |	16.67%
+Exam 2 |	100   |	16.67%
+Exam 3 |	100   |	16.67%
+Exam 4	| 100	| 25%
+HW | 	200	| 25%
 Total |	600	| 100%
 
 
-## Exam:
+## Exam: (TBD)
 * Midterm Exam 1 (2 hours exam)
 * Midterm Exam 2 (2 hours exam)
 * Final Exam (3 hours exam)
@@ -91,7 +91,7 @@ Total |	600	| 100%
 * Final exam is cumulative. 
 * No special make-up exam is given for any of the exams that are missed except for extreme health problems. Under such conditions, contact the Instructor as soon as possible. Proper documentation should be provided. 
 
-## Homework:
+## Homework: (TBD)
 
 * HW will be updated after each class. Due date will be announced at least one weak ahead. Show all solutions explicitly.
 * Problem sets should be submitted …TBD 
@@ -101,7 +101,7 @@ Total |	600	| 100%
 * Each HW is worth 30 points. 
 * If there is an error in the homework or exam grading, you need to contact TA or me right after the homework or exam paper is returned. The grade won't be changed if it is beyond one week.
 
-## Project:
+## Project: (TBD)
 * It is your opportunity to use the concepts learned in this class to analyze a real-life time series. 
 *	You choose your own data set. I do not recommend financial data for this, unless you are interested in studying additional models, such as GARCH model.
 *	You can work individually or in a group of at most two people. 
