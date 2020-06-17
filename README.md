@@ -2,8 +2,7 @@
 UIUC STAT429 Course 2020 Fall
 
 # Lecture Time / Location
-* Lecture Time: MWF 3:00-3:50 PM
-* Location: 1090 Lincoln Hall (hopefully...)
+* TBD
 
 # Course Staff
 ## Instructor
@@ -14,11 +13,20 @@ UIUC STAT429 Course 2020 Fall
 ## Teaching Assistant/Grader
 TBD
 
-# Textbook (required)
+# Textbook 
+## Required
  * Time Series: A Data Analysis Approach Using R, 1st Edition, Robert Shumway, David Stoffer, Chapman and Hall/CRC
  * Resources: https://www.stat.pitt.edu/stoffer/tsda/
  
  ![Image of Book Cover](https://github.com/hyoeun-lee/STAT429_FALL/blob/master/9780367221096.jpg?raw=true)
+
+## Recommended
+* Time Series Analysis: With Applications in R, 2nd Edition,  Jonathan D. Cryer, Kung-Sik Chan, Springer
+
+
+Second Edition
+ 
+ 
  
  
 # Software:
