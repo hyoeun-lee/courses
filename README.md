@@ -49,18 +49,18 @@ This is an introductory course on time series analysis suitable for upper level 
 We will cover Chapter 1-7 of [SS], Chapter 1-10, 13-14 of [CC]. This will include the following:
 
 * Objective of time series analysis and examples of time series data sets
-	* **Module 1:Basics and fundamental concepts of Time Series ** 
+	* **Module 1:Basics and fundamental concepts of Time Series** 
 		* Time series models
 		* Stationarity, autocovariance, autocorrelation
 		* Regression, Trend
-	* **Module 2: Major models for stationary and non-stationary time series **
+	* **Module 2: Major models for stationary and non-stationary time series**
 		* MA, AR, and linear processes.
 		* Sample ACF, PACF and its properties, its connections to model specification.
 		* Causality, invertibility, and AR(p) models.
 		* ARMA(p; q) models and their properties
 		* ARIMA(p;d;q) models and their properties
 		* Seasonal ARIMA models and their properites
-	* **Module 3: Model fitting, diagnostifcs, forecasting **
+	* **Module 3: Model fitting, diagnostifcs, forecasting**
 		* Parameter estimation: Yule-Walker estimation, MLE
 		* Order Selection, Model diagnostics
 		* Forecasting
@@ -78,14 +78,15 @@ Category            | Points   | Percentage
 Exam 1 |	100   |	16.67%
 Exam 2 |	100   |	16.67%
 Exam 3 |	100   |	16.67%
-Exam 4	| 100	| 25%
-HW | 	200	| 25%
+Final (cumulative)	| 150	| 25%
+HW | 	150	| 25%
 Total |	600	| 100%
 
 
 ## Exam: (TBD)
 * Midterm Exam 1 (2 hours exam)
 * Midterm Exam 2 (2 hours exam)
+* Midterm Exam 3 (2 hours exam)
 * Final Exam (3 hours exam)
 
 * Final exam is cumulative. 
@@ -94,23 +95,14 @@ Total |	600	| 100%
 ## Homework: (TBD)
 
 * HW will be updated after each class. Due date will be announced at least one weak ahead. Show all solutions explicitly.
-* Problem sets should be submitted …TBD 
+* Problem sets should be submitted electronically through ...(TBD)
+* Any typed answer or the picture /& scan of handwritten answer is acceptable. 
+* **DO NOT DISCARD YOUR HANDWRITTEN ANSWER THROUGHOUT SEMESTER**
 * Late problem sets cannot be accepted.
 * Discussion of homework problems is encouraged, but solutions must be written up individually. Direct copying is not acceptable.
-* There will be 6 HW, lowest score will be dropped.
-* Each HW is worth 30 points. 
+* There will be 12 HW, two lowest scores will be dropped.
+* Each HW is worth 15 points. 
 * If there is an error in the homework or exam grading, you need to contact TA or me right after the homework or exam paper is returned. The grade won't be changed if it is beyond one week.
-
-## Project: (TBD)
-* It is your opportunity to use the concepts learned in this class to analyze a real-life time series. 
-*	You choose your own data set. I do not recommend financial data for this, unless you are interested in studying additional models, such as GARCH model.
-*	You can work individually or in a group of at most two people. 
-*	TBD (potential video presentation)
-*	Project grade will be split as
-*	Data description and preliminary analysis report (max 3 pages): 30 points
-*	Deadline: TBD
-*	Data analysis, modeling and forecasting report (max 10 pages): 70 points
-*	Deadline: TBD
 
 
 ## Academic Integrity:
