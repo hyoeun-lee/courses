@@ -12,7 +12,9 @@ Stochastic Process: collection of Random Variables.
 	+ Humidity in Illini Union at time instant $t$
 	+ Amazon stock price at time instant $t$
 * Why do we model? To reduce uncertainty.
-* There is a {\color{red} probability law} that governs each stochastic process.
+* There is a probability law that governs each stochastic process.
 * A model is an approximation of such a probability law.
 * A model is estimated (usually) using past data.
+
+
 
