@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = FALSE, fig.width = 6.5, fig.height = 4, fig.align =
 set.seed(400)
 # helpers that treat a list of equally likely outcomes as the whole population
 pop_cov <- function(a, b) mean(a * b) - mean(a) * mean(b)
+fmt4 <- function(x) formatC(x, format = "f", digits = 4)   # probabilities: 4 decimal places
 pop_cor <- function(a, b) pop_cov(a, b) / sqrt(pop_cov(a, a) * pop_cov(b, b))
 ```
 
@@ -178,8 +179,8 @@ colnames(res) <- c("Cov", "Corr"); round(res, 4)
 Probability check, computed from the same 36 outcomes (joint probability of "sum = 2 and gap = 0" versus the product of the two separate probabilities):
 
 ```{r dice-dep}
-c(P_joint = mean(o$s == 2 & o$gap == 0),
-  P_product = mean(o$s == 2) * mean(o$gap == 0))
+print(c(P_joint = fmt4(mean(o$s == 2 & o$gap == 0)),
+        P_product = fmt4(mean(o$s == 2) * mean(o$gap == 0))), quote = FALSE)
 ```
 
 If the sum is 2, the gap *must* be 0 (joint probability 1/36), but the product of the marginals is only $(1/36)(6/36)$. Uncorrelated $\neq$ independent.
@@ -284,16 +285,17 @@ c(cov = cov(temp, energy), cor = cor(temp, energy))
 
 # A discrete joint distribution, start to finish
 
-For a student, $X$ = number of late assignments and $Y$ = number of missed lectures, with the joint pmf below (rows are $x$, columns are $y$). The second table checks that the probabilities sum to 1 and gives the marginal probabilities (row sums for $X$, column sums for $Y$).
+For a student, $X$ = number of late assignments and $Y$ = number of missed lectures, with the joint pmf below (rows are $x$, columns are $y$). The last row and column give the marginal probabilities $p_Y(y)$ and $p_X(x)$ (column and row sums), and the bottom-right corner, 1, confirms the probabilities sum to 1.
 
 ```{r pmf}
 p <- matrix(c(.2, .1, 0,
               .1, .3, .1,
               0,  .1, .1), nrow = 3, byrow = TRUE,
             dimnames = list(X = 0:2, Y = 0:2))
-p
 vals <- 0:2
-c(sum_check = sum(p), marg_X = rowSums(p), marg_Y = colSums(p))
+pt <- cbind(p, "p_X(x)" = rowSums(p))
+pt <- rbind(pt, "p_Y(y)" = c(colSums(p), sum(p)))
+noquote(matrix(fmt4(pt), nrow = 4, dimnames = dimnames(pt)))
 ```
 
 Next we compute, with the formulas from the big-picture table: $E[X]=\sum x\,p_X(x)$, $E[Y]$ likewise, $E[XY]=\sum\sum xy\,p(x,y)$, $\mathrm{Cov}=E[XY]-E[X]E[Y]$, $\mathrm{Var}(X)=E[X^2]-E[X]^2$, and $\rho=\mathrm{Cov}/(\sigma_X\sigma_Y)$:
