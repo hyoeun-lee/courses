@@ -49,9 +49,13 @@ data.frame(route = c("A", "B"),
 ```
 
 ```{r variance-plot}
-hist(route_B, breaks = 50, col = rgb(1, 0, 0, .4), xlim = c(-10, 20),
+brks <- seq(-12, 22, by = 0.5)                       # same bins for both routes
+hA <- hist(route_A, breaks = brks, plot = FALSE)
+hB <- hist(route_B, breaks = brks, plot = FALSE)
+hist(route_B, breaks = brks, col = rgb(1, 0, 0, .4), xlim = c(-10, 20),
+     ylim = c(0, max(hA$counts, hB$counts) * 1.1),     # leave room for the taller histogram
      main = "Bus delay (minutes)", xlab = "minutes late")
-hist(route_A, breaks = 50, col = rgb(0, 0, 1, .4), add = TRUE)
+hist(route_A, breaks = brks, col = rgb(0, 0, 1, .4), add = TRUE)
 legend("topright", c("Route A (sd 1)", "Route B (sd 4)"),
        fill = c(rgb(0, 0, 1, .4), rgb(1, 0, 0, .4)), bty = "n")
 ```
