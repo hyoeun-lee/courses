@@ -1,0 +1,342 @@
+---
+title: "Variance, Covariance and Correlation: Concepts through Simulation"
+subtitle: "STAT 400 -- Multiple Random Variables"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    self_contained: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6.5, fig.height = 4, fig.align = "center",
+                      message = FALSE, warning = FALSE)
+set.seed(400)
+# helpers that treat a list of equally likely outcomes as the whole population
+pop_cov <- function(a, b) mean(a * b) - mean(a) * mean(b)
+pop_cor <- function(a, b) pop_cov(a, b) / sqrt(pop_cov(a, a) * pop_cov(b, b))
+```
+
+# The big picture
+
+| Quantity | Question it answers | Formula |
+|---|---|---|
+| **Variance** | How much does *one* variable bounce around its mean? | $\mathrm{Var}(X)=E[(X-\mu_X)^2]=E[X^2]-\mu_X^2$ |
+| **Covariance** | When $X$ is above its mean, is $Y$ usually above (+) or below (−) its mean? | $\mathrm{Cov}(X,Y)=E[(X-\mu_X)(Y-\mu_Y)]=E[XY]-\mu_X\mu_Y$ |
+| **Correlation** | The same, but with units removed, between $-1$ and $1$ | $\rho=\dfrac{\mathrm{Cov}(X,Y)}{\sigma_X\sigma_Y}$ |
+
+Three ideas to keep coming back to:
+
+1. Covariance and correlation measure **linear** togetherness only.
+2. Independent $\Rightarrow$ covariance $=0$, but **not** the other way around.
+3. Correlation is **not** causation.
+
+In each section below we run an experiment, look at the numbers, and interpret them.
+
+# Variance: one variable bouncing around
+
+*Experiment:* the number of minutes your bus is late. Two routes have the **same average** delay (5 minutes) but different reliability.
+
+```{r variance}
+route_A <- rnorm(10000, mean = 5, sd = 1)   # reliable
+route_B <- rnorm(10000, mean = 5, sd = 4)   # unpredictable
+data.frame(route = c("A", "B"),
+           mean = c(mean(route_A), mean(route_B)),
+           variance = c(var(route_A), var(route_B)),
+           sd = c(sd(route_A), sd(route_B)))
+```
+
+```{r variance-plot}
+hist(route_B, breaks = 50, col = rgb(1, 0, 0, .4), xlim = c(-10, 20),
+     main = "Bus delay (minutes)", xlab = "minutes late")
+hist(route_A, breaks = 50, col = rgb(0, 0, 1, .4), add = TRUE)
+legend("topright", c("Route A (sd 1)", "Route B (sd 4)"),
+       fill = c(rgb(0, 0, 1, .4), rgb(1, 0, 0, .4)), bty = "n")
+```
+
+**Interpretation.** Same mean, very different variance. The variance is in *minutes squared*; the standard deviation (the square root) is back in minutes, so we usually quote that.
+
+# Covariance: do two variables move together?
+
+*Experiment:* 200 students. $X$ = hours studied for an exam, $Y$ = exam score. (Simulated: each extra hour adds about 4 points, plus individual noise.)
+
+```{r study-data}
+n <- 200
+hours <- rnorm(n, mean = 6, sd = 2)
+score <- 55 + 4 * (hours - 6) + rnorm(n, 0, 8)
+head(data.frame(hours = round(hours, 1), score = round(score, 1)))
+```
+
+## The quadrant picture
+
+Draw a vertical line at the average hours and a horizontal line at the average score. The product $(x-\bar x)(y-\bar y)$ is **positive** (blue) in the upper-right and lower-left quadrants and **negative** (red) in the other two.
+
+```{r quadrants}
+prod_dev <- (hours - mean(hours)) * (score - mean(score))
+plot(hours, score, pch = 16, col = ifelse(prod_dev > 0, "blue", "red"),
+     xlab = "Hours studied", ylab = "Exam score",
+     main = "Blue: product > 0   Red: product < 0")
+abline(v = mean(hours), h = mean(score), lty = 2)
+```
+
+Most points are blue, so the *average* product is positive. That average **is** the covariance:
+
+```{r cov-by-hand}
+sum(prod_dev) / (n - 1)    # sample covariance by hand
+cov(hours, score)          # R's built-in: identical
+```
+
+**Interpretation.** A positive covariance means "above-average study time goes with above-average scores". But what does a covariance of about 12 *mean*? "Hour-points" is not a natural unit, so we need correlation.
+
+## Seeing different covariances
+
+Same spread for $X$ and $Y$ in every panel; only the strength and direction of the relationship change.
+
+```{r panels, fig.width=9, fig.height=2.6}
+sim_pair <- function(rho, n) {
+  x <- rnorm(n); y <- rho * x + sqrt(1 - rho^2) * rnorm(n)
+  cbind(x, y)
+}
+par(mfrow = c(1, 5), mar = c(4, 3, 3, 1))
+for (r in c(-0.9, -0.5, 0, 0.5, 0.9)) {
+  d <- sim_pair(r, 1000)
+  plot(d, pch = 16, cex = .4, col = rgb(0, 0, 0, .3), xlim = c(-4, 4), ylim = c(-4, 4),
+       main = sprintf("true rho=%.1f\nsample r=%.2f", r, cor(d[, 1], d[, 2])))
+  abline(h = 0, v = 0, lty = 2, col = "red")
+}
+par(mfrow = c(1, 1))
+```
+
+# Correlation: covariance without units
+
+```{r units}
+height_in <- rnorm(300, 68, 3)
+weight_lb <- 150 + 4 * (height_in - 68) + rnorm(300, 0, 15)
+data.frame(
+  units = c("inches & pounds", "centimetres & kilograms"),
+  covariance  = c(cov(height_in, weight_lb), cov(height_in * 2.54, weight_lb * 0.4536)),
+  correlation = c(cor(height_in, weight_lb), cor(height_in * 2.54, weight_lb * 0.4536)))
+```
+
+**Interpretation.** Changing units multiplies the covariance by $2.54\times0.4536\approx1.15$, but the correlation does not move. That is why we compare correlations, not covariances, across different variables. A correlation near $\pm1$ means a tight straight-line pattern; near 0 means no *linear* pattern.
+
+# Experiment: two dice
+
+Roll two fair dice. $D_1$, $D_2$ are the dice, $S=D_1+D_2$, and $G=|D_1-D_2|$ is the gap. There are only 36 equally likely outcomes, so we can compute everything **exactly**.
+
+```{r dice}
+o <- expand.grid(d1 = 1:6, d2 = 1:6)
+o$s <- o$d1 + o$d2; o$gap <- abs(o$d1 - o$d2); o$mx <- pmax(o$d1, o$d2)
+res <- rbind(
+  "D1 and D2"   = c(pop_cov(o$d1, o$d2),  pop_cor(o$d1, o$d2)),
+  "D1 and sum"  = c(pop_cov(o$d1, o$s),   pop_cor(o$d1, o$s)),
+  "D1 and max"  = c(pop_cov(o$d1, o$mx),  pop_cor(o$d1, o$mx)),
+  "sum and gap" = c(pop_cov(o$s, o$gap),  pop_cor(o$s, o$gap)))
+colnames(res) <- c("Cov", "Corr"); round(res, 4)
+```
+
+**Interpretation.**
+
+* **D1 and D2:** 0. The dice cannot influence each other.
+* **D1 and sum:** $\mathrm{Cov}(D_1,D_1+D_2)=\mathrm{Var}(D_1)+0=35/12\approx2.917$, and $\rho=1/\sqrt2\approx0.707$. Half of the sum's variance comes from the first die.
+* **sum and gap:** covariance 0, yet they are **not** independent:
+
+```{r dice-dep}
+c(P_joint = mean(o$s == 2 & o$gap == 0),
+  P_product = mean(o$s == 2) * mean(o$gap == 0))
+```
+
+If the sum is 2, the gap *must* be 0 (joint probability 1/36), but the product of the marginals is only $(1/36)(6/36)$. Uncorrelated $\neq$ independent.
+
+Simulating the experiment gives the same story (with sampling noise):
+
+```{r dice-sim}
+a <- sample(6, 10000, TRUE); b <- sample(6, 10000, TRUE)
+c(cor_D1_D2 = cor(a, b), cor_D1_sum = cor(a, a + b))
+```
+
+# Experiment: guessing on a true/false quiz
+
+A student guesses all 10 questions. $X$ = number correct, $Y$ = number wrong, so $Y=10-X$.
+
+```{r quiz}
+correct <- rbinom(5000, 10, 0.5); wrong <- 10 - correct
+c(cov = cov(correct, wrong), var_correct = var(correct), cor = cor(correct, wrong))
+plot(jitter(correct), jitter(wrong), pch = 16, col = rgb(0, 0, 0, .15),
+     xlab = "# correct", ylab = "# wrong", main = "Perfect negative correlation")
+cor(correct, 5 * correct)   # points per question: still +1
+```
+
+**Interpretation.** $\mathrm{Cov}(X,10-X)=-\mathrm{Var}(X)=-2.5$ and $\rho=-1$ exactly: a perfect decreasing straight line. Multiplying the score by 5 points per question does not change the correlation (+1 with the score).
+
+# Experiment: dealing two cards
+
+$X=1$ if the first card is a heart, $Y=1$ if the second is.
+
+```{r cards}
+deck <- rep(c(1, 0), c(13, 39))
+draw <- function(replace) deck[sample(52, 2, replace = replace)]
+wo <- t(replicate(2e5, draw(FALSE)))
+w  <- t(replicate(2e5, draw(TRUE)))
+data.frame(sampling = c("with replacement", "without replacement"),
+           covariance = c(cov(w[, 1], w[, 2]), cov(wo[, 1], wo[, 2])),
+           exact = c(0, -1/272))
+```
+
+**Interpretation.** Without replacement, one heart gone leaves fewer hearts in the deck: a **tiny** negative dependence ($\rho=-1/51\approx-0.02$). Dependence can be real yet weak, and it fades as the population grows, which is why polling 1,000 people from millions behaves almost like independent sampling.
+
+# Experiment: commute time and rain (why $\mathrm{Var}(X+Y)$ needs covariance)
+
+Your trip is a bus ride $B$ plus a walk $W$. It rains with probability 0.3 and rain slows **both**:
+
+* $B=20+10R+\varepsilon_B$, $\varepsilon_B\sim N(0,3^2)$
+* $W=10+6R+\varepsilon_W$, $\varepsilon_W\sim N(0,2^2)$
+
+```{r commute}
+n <- 1e5
+rain  <- rbinom(n, 1, 0.3)
+bus   <- 20 + 10 * rain + rnorm(n, 0, 3)
+walk  <- 10 +  6 * rain + rnorm(n, 0, 2)
+total <- bus + walk
+c(var_bus = var(bus), var_walk = var(walk), cov = cov(bus, walk), cor = cor(bus, walk))
+```
+
+Theory says $\mathrm{Cov}(B,W)=10\cdot6\cdot\mathrm{Var}(R)=60(0.21)=12.6$. Now the variance of the total:
+
+```{r commute-var}
+data.frame(
+  method = c("Var(B)+Var(W)  (pretend independent)",
+             "Var(B)+Var(W)+2Cov(B,W)",
+             "Simulated Var(B+W)"),
+  variance = c(var(bus) + var(walk),
+               var(bus) + var(walk) + 2 * cov(bus, walk),
+               var(total)))
+```
+
+The second and third lines match; the naive first line is far too small. What does that cost you? Suppose you want to be on time 95% of the time:
+
+```{r commute-buffer}
+c(true_95th_percentile  = unname(quantile(total, .95)),
+  naive_independent_95th = mean(total) + qnorm(.95) * sqrt(var(bus) + var(walk)))
+hist(total, breaks = 60, col = "grey85", main = "Total commute time", xlab = "minutes")
+```
+
+**Interpretation.** Because rain hits both parts of the trip, bad days are *bad on both ends* and the total is more spread out (a two-humped distribution: dry days and rainy days). Ignoring covariance gives a buffer that is too small. The same thing happens with money: two stocks that fall together make a riskier portfolio than their separate variances suggest, and two stocks that move oppositely *reduce* the variance of the sum.
+
+To see the effect of the covariance alone, scramble the walk times so they no longer line up with the bus times (same marginal distributions, link broken):
+
+```{r commute-shuffle}
+c(original = var(bus + walk), shuffled = var(bus + sample(walk)))
+```
+
+# Experiment: temperature and electricity use
+
+A house heats when it's cold and air-conditions when it's hot. $X$ = outdoor temperature minus 20°C (uniform on $[-15,15]$), $Y\approx|X|$ plus noise.
+
+```{r energy}
+temp   <- runif(3000, -15, 15)
+energy <- abs(temp) + rnorm(3000, 0, 1)
+plot(temp, energy, pch = 16, col = rgb(0, 0, 0, .25),
+     xlab = "Outdoor temp minus 20C", ylab = "Energy use",
+     main = sprintf("Strong relationship, correlation = %.2f", cor(temp, energy)))
+c(cov = cov(temp, energy), cor = cor(temp, energy))
+```
+
+**Interpretation.** $Y$ is almost determined by $X$, yet the correlation is about 0: cold days (negative $x$) and hot days (positive $x$) both mean high energy use, so the positive and negative products cancel. *Always plot the data.*
+
+# A discrete joint distribution, start to finish
+
+For a student, $X$ = number of late assignments and $Y$ = number of missed lectures, with joint pmf:
+
+```{r pmf}
+p <- matrix(c(.2, .1, 0,
+              .1, .3, .1,
+              0,  .1, .1), nrow = 3, byrow = TRUE,
+            dimnames = list(X = 0:2, Y = 0:2))
+p
+vals <- 0:2
+c(sum_check = sum(p), marg_X = rowSums(p), marg_Y = colSums(p))
+```
+
+```{r pmf-calc}
+EX  <- sum(vals * rowSums(p));  EY  <- sum(vals * colSums(p))
+EXY <- sum(outer(vals, vals) * p)
+covXY <- EXY - EX * EY
+varX  <- sum(vals^2 * rowSums(p)) - EX^2
+varY  <- sum(vals^2 * colSums(p)) - EY^2
+c(EX = EX, EY = EY, EXY = EXY, Cov = covXY, VarX = varX, VarY = varY,
+  Corr = covXY / sqrt(varX * varY))
+```
+
+Check by simulating 100,000 students from the table:
+
+```{r pmf-sim}
+cells <- expand.grid(Y = vals, X = vals)[, c("X", "Y")]       # X slowest, matches t(p)
+idx <- sample(nrow(cells), 1e5, replace = TRUE, prob = as.vector(t(p)))
+s <- cells[idx, ]
+c(cov = cov(s$X, s$Y), cor = cor(s$X, s$Y))
+```
+
+**Interpretation.** $\mathrm{Cov}=1.1-0.9^2=0.29>0$ and $\rho\approx0.59$: students with more late assignments tend to miss more lectures. They are dependent: $P(0,0)=0.2$ but $p_X(0)p_Y(0)=0.09$.
+
+# Correlation is not causation
+
+*Experiment:* daily ice-cream sales and swimming-pool injuries over a summer. Neither causes the other; **temperature** drives both.
+
+```{r confound}
+days  <- 120
+temp  <- rnorm(days, 28, 5)
+icecream <- 50 + 8 * temp + rnorm(days, 0, 25)
+injuries <- 1 + 0.25 * temp + rnorm(days, 0, 1.5)
+cor(icecream, injuries)                       # clearly positive, and spurious
+# Adjust for temperature: correlate what is LEFT after removing the temperature effect
+cor(resid(lm(icecream ~ temp)), resid(lm(injuries ~ temp)))
+plot(icecream, injuries, pch = 16, col = rgb(0, 0, 0, .4),
+     main = "A correlation without causation")
+```
+
+**Interpretation.** Once the effect of temperature is removed from both variables, the leftover correlation is near 0, which exposes the lurking variable. (Statisticians call this a partial correlation.)
+
+# Class survey activity (use your own data)
+
+Replace the simulated data below with the class survey (`read.csv("survey.csv")`: `height`, `shoe`, `sleep`, `study`).
+
+```{r survey}
+height <- rnorm(60, 67, 4); shoe <- 0.9 * (height - 67) + 9 + rnorm(60, 0, 0.8)
+sleep  <- rnorm(60, 7, 1);  study <- pmax(0, 12 - 0.8 * sleep + rnorm(60, 0, 2))
+c(height_shoe = cor(height, shoe), sleep_study = cor(sleep, study))
+```
+
+*Outliers:* add one badly recorded data point (a student listed as 7 feet tall with size-7 shoes). Pearson correlation is sensitive to it; the rank-based Spearman correlation moves much less.
+
+```{r outlier}
+c(pearson_before = cor(height, shoe),
+  pearson_after  = cor(c(height, 84), c(shoe, 7)),
+  spearman_after = cor(c(height, 84), c(shoe, 7), method = "spearman"))
+```
+
+# Summary
+
+```{r summary-table, echo=FALSE}
+knitr::kable(data.frame(
+  Experiment = c("Study hours / score", "Dice: D1 and sum", "Dice: sum and gap", "True/false quiz",
+                 "Two cards, no replacement", "Rain commute", "Temperature / energy"),
+  Cov_sign = c("+", "+", "0", "-", "-", "+", "0"),
+  Lesson = c("Quadrants: average product of deviations",
+             "Part of a variable is shared with the sum",
+             "Uncorrelated but dependent",
+             "Perfect linear relation: rho = -1; scale-free",
+             "Small, real dependence",
+             "Var(X+Y) = Var X + Var Y + 2 Cov; risk and buffers",
+             "Correlation only sees *linear* association")))
+```
+
+# Practice problems
+
+1. If $\mathrm{Var}(X)=4$, $\mathrm{Var}(Y)=9$, $\mathrm{Cov}(X,Y)=3$, find $\mathrm{Var}(X+Y)$, $\mathrm{Var}(X-Y)$ and $\rho$. (Answers: 19, 7, 0.5)
+2. In the commute experiment, change the rain probability to 0.1 and 0.5. Which gives the larger covariance between bus and walk? (Use $\mathrm{Var}(R)=p(1-p)$, then check by simulation.)
+3. Create two variables that are dependent but have correlation near 0 other than $Y=|X|$.
+4. Two independent stocks each have SD \$10. What is the SD of their sum if the correlation is 0? $+0.8$? $-0.8$? (14.1, 19.0, 6.3)
+5. Using the dice, compute $\mathrm{Cov}(D_1, \min(D_1,D_2))$ and explain its sign.
