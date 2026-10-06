@@ -2961,7 +2961,7 @@ next section.</p>
 without units</h1>
 <p>The previous section showed that rescaling the variables changes the
 covariance even though the picture is the same. Correlation divides out
-the units, <span class="math inline">\(\rho=\\mathrm{Cov}(X,Y)/(\\sigma_X\\sigma_Y)\)</span>,
+the units, <span class="math inline">\(\rho=\mathrm{Cov}(X,Y)/(\sigma_X\sigma_Y)\)</span>,
 so it only reflects the shape.</p>
 <pre class="r"><code>height_in &lt;- rnorm(300, 68, 3)
 weight_lb &lt;- 150 + 4 * (height_in - 68) + rnorm(300, 0, 15)
