@@ -206,22 +206,6 @@ print(c(cor_correct_vs_5pt_score = cor(correct, 5 * correct)))
 
 **Interpretation.** $\mathrm{Cov}(X,10-X)=-\mathrm{Var}(X)=-2.5$ and $\rho=-1$ exactly: a perfect decreasing straight line. Multiplying the score by 5 points per question does not change the correlation (+1 with the score).
 
-# Experiment: dealing two cards
-
-$X=1$ if the first card is a heart, $Y=1$ if the second is. We deal two cards 200,000 times with replacement (the first card is shuffled back in) and 200,000 times without replacement, and compare the covariance with the exact value. The exact covariance without replacement is $P(\text{both hearts})-P(\text{heart})^2=\frac{13}{52}\cdot\frac{12}{51}-\frac{1}{16}=-\frac1{272}$.
-
-```{r cards}
-deck <- rep(c(1, 0), c(13, 39))
-draw <- function(replace) deck[sample(52, 2, replace = replace)]
-wo <- t(replicate(2e5, draw(FALSE)))
-w  <- t(replicate(2e5, draw(TRUE)))
-data.frame(sampling = c("with replacement", "without replacement"),
-           covariance = c(cov(w[, 1], w[, 2]), cov(wo[, 1], wo[, 2])),
-           exact = c(0, -1/272))
-```
-
-**Interpretation.** Without replacement, one heart gone leaves fewer hearts in the deck: a **tiny** negative dependence ($\rho=-1/51\approx-0.02$). Dependence can be real yet weak, and it fades as the population grows, which is why polling 1,000 people from millions behaves almost like independent sampling.
-
 # Experiment: commute time and rain (why $\mathrm{Var}(X+Y)$ needs covariance)
 
 Your trip is a bus ride $B$ plus a walk $W$. It rains with probability 0.3 and rain slows **both**:
@@ -298,7 +282,17 @@ pt <- rbind(pt, "p_Y(y)" = c(colSums(p), sum(p)))
 noquote(matrix(fmt4(pt), nrow = 4, dimnames = dimnames(pt)))
 ```
 
-Next we compute, with the formulas from the big-picture table: $E[X]=\sum x\,p_X(x)$, $E[Y]$ likewise, $E[XY]=\sum\sum xy\,p(x,y)$, $\mathrm{Cov}=E[XY]-E[X]E[Y]$, $\mathrm{Var}(X)=E[X^2]-E[X]^2$, and $\rho=\mathrm{Cov}/(\sigma_X\sigma_Y)$:
+Next we compute, using the formulas from the big-picture table:
+
+$$E[X]=\sum_x x\,p_X(x), \qquad E[Y]=\sum_y y\,p_Y(y)$$
+
+$$E[XY]=\sum_x\sum_y xy\,p(x,y)$$
+
+$$\mathrm{Cov}(X,Y)=E[XY]-E[X]\,E[Y]$$
+
+$$\mathrm{Var}(X)=E[X^2]-\big(E[X]\big)^2, \qquad \mathrm{Var}(Y)=E[Y^2]-\big(E[Y]\big)^2$$
+
+$$\rho=\frac{\mathrm{Cov}(X,Y)}{\sigma_X\,\sigma_Y}$$
 
 ```{r pmf-calc}
 EX  <- sum(vals * rowSums(p));  EY  <- sum(vals * colSums(p))
@@ -343,13 +337,12 @@ plot(icecream, injuries, pch = 16, col = rgb(0, 0, 0, .4),
 ```{r summary-table, echo=FALSE}
 knitr::kable(data.frame(
   Experiment = c("Study hours / score", "Dice: D1 and sum", "Dice: sum and gap", "True/false quiz",
-                 "Two cards, no replacement", "Rain commute", "Temperature / energy"),
-  Cov_sign = c("+", "+", "0", "-", "-", "+", "0"),
+                 "Rain commute", "Temperature / energy"),
+  Cov_sign = c("+", "+", "0", "-", "+", "0"),
   Lesson = c("Quadrants: average product of deviations",
              "Part of a variable is shared with the sum",
              "Uncorrelated but dependent",
              "Perfect linear relation: rho = -1; scale-free",
-             "Small, real dependence",
              "Var(X+Y) = Var X + Var Y + 2 Cov; risk and buffers",
              "Correlation only sees *linear* association")))
 ```
