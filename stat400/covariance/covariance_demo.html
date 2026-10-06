@@ -3206,29 +3206,8 @@ removed from both variables, the leftover correlation is near 0, which
 exposes the lurking variable. (Statisticians call this a partial
 correlation.)</p>
 </div>
-<div id="class-survey-activity-use-your-own-data" class="section level1" number="12">
-<h1><span class="header-section-number">12</span> Class survey activity
-(use your own data)</h1>
-<p>Replace the simulated data below with the class survey
-(<code>read.csv(&quot;survey.csv&quot;)</code>: <code>height</code>,
-<code>shoe</code>, <code>sleep</code>, <code>study</code>).</p>
-<pre class="r"><code>height &lt;- rnorm(60, 67, 4); shoe &lt;- 0.9 * (height - 67) + 9 + rnorm(60, 0, 0.8)
-sleep  &lt;- rnorm(60, 7, 1);  study &lt;- pmax(0, 12 - 0.8 * sleep + rnorm(60, 0, 2))
-c(height_shoe = cor(height, shoe), sleep_study = cor(sleep, study))</code></pre>
-<pre><code>## height_shoe sleep_study 
-##   0.9615218  -0.4191861</code></pre>
-<p><em>Outliers:</em> add one badly recorded data point (a student
-listed as 7 feet tall with size-7 shoes). Pearson correlation is
-sensitive to it; the rank-based Spearman correlation moves much
-less.</p>
-<pre class="r"><code>c(pearson_before = cor(height, shoe),
-  pearson_after  = cor(c(height, 84), c(shoe, 7)),
-  spearman_after = cor(c(height, 84), c(shoe, 7), method = &quot;spearman&quot;))</code></pre>
-<pre><code>## pearson_before  pearson_after spearman_after 
-##      0.9615218      0.7521562      0.9043892</code></pre>
-</div>
-<div id="summary" class="section level1" number="13">
-<h1><span class="header-section-number">13</span> Summary</h1>
+<div id="summary" class="section level1" number="12">
+<h1><span class="header-section-number">12</span> Summary</h1>
 <table>
 <colgroup>
 <col width="30%" />
@@ -3280,22 +3259,6 @@ less.</p>
 </tr>
 </tbody>
 </table>
-</div>
-<div id="practice-problems" class="section level1" number="14">
-<h1><span class="header-section-number">14</span> Practice problems</h1>
-<ol style="list-style-type: decimal">
-<li>If <span class="math inline">\(\mathrm{Var}(X)=4\)</span>, <span class="math inline">\(\mathrm{Var}(Y)=9\)</span>, <span class="math inline">\(\mathrm{Cov}(X,Y)=3\)</span>, find <span class="math inline">\(\mathrm{Var}(X+Y)\)</span>, <span class="math inline">\(\mathrm{Var}(X-Y)\)</span> and <span class="math inline">\(\rho\)</span>. (Answers: 19, 7, 0.5)</li>
-<li>In the commute experiment, change the rain probability to 0.1 and
-0.5. Which gives the larger covariance between bus and walk? (Use <span class="math inline">\(\mathrm{Var}(R)=p(1-p)\)</span>, then check by
-simulation.)</li>
-<li>Create two variables that are dependent but have correlation near 0
-other than <span class="math inline">\(Y=|X|\)</span>.</li>
-<li>Two independent stocks each have SD $10. What is the SD of their sum
-if the correlation is 0? <span class="math inline">\(+0.8\)</span>?
-<span class="math inline">\(-0.8\)</span>? (14.1, 19.0, 6.3)</li>
-<li>Using the dice, compute <span class="math inline">\(\mathrm{Cov}(D_1, \min(D_1,D_2))\)</span> and
-explain its sign.</li>
-</ol>
 </div>
 
 
