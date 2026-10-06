@@ -1,6 +1,5 @@
 ---
 title: "Variance, Covariance and Correlation: Concepts through Simulation"
-subtitle: "STAT 400 -- Multiple Random Variables"
 output:
   html_document:
     toc: true
