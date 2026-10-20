@@ -531,7 +531,8 @@ option. What is the probability that the value of this portfolio will exceed \$3
 		    P(Y \leq 34) &= P\left( Z \leq \frac{34+0.5-30.85}{\sqrt{21.3328}} \right) \\
             &= P(Z \leq 0.79) \\
             &= 0.7852
-		\end{aligned}$$}
+		\end{aligned}$$
+		(R: \texttt{p <- pnorm(20.8, 21, 0.4); pnorm(34.5, 100*p, sqrt(100*p*(1-p)))} gives 0.7851)}
 		\item Let $\bar{X}$ equal the sample mean of the 100 mints selected and weighed on a particular shift. Find $P(21.03 \leq \bar{X} \leq 21.04)$. \\ {\Red Since each $X_i$ is normal, $\bar{X} \sim N(21, 0.16/100)$ exactly. We have $$\begin{aligned}
 		    P(21.03 \leq \bar{X} \leq 21.04) &= P\left(\frac{21.03-21}{\sqrt{0.16/100}} \leq \frac{\bar{X}-21}{\sqrt{0.16/100}} \leq \frac{21.04-21}{\sqrt{0.16/100}}\right) \\
             &= P(0.75 \leq Z \leq 1) \\
@@ -553,7 +554,8 @@ option. What is the probability that the value of this portfolio will exceed \$3
     P(Y < 190) &= P(Y \leq 189) \\
     &= P\left(Z \leq \frac{189+0.5-365 \cdot e^{-0.6}}{\sqrt{365 \cdot e^{-0.6}(1-e^{-0.6})}}\right) \\
     &= 0.1276
-\end{aligned}$$}
+\end{aligned}$$
+(R: \texttt{p <- exp(-0.6); pnorm(189.5, 365*p, sqrt(365*p*(1-p)))} gives 0.1276)}
 \end{enumerate}
 \newpage
 \item The distribution of the baggage weights for passengers using a particular airline has a mean of $21$ lbs and a standard deviation of $5.3$ lbs. 
@@ -568,7 +570,8 @@ option. What is the probability that the value of this portfolio will exceed \$3
     &= P(-0.94 < Z < 0.94) \\
     &= 2(0.8264) - 1 \\
     &= 0.6528
-\end{aligned}$$}
+\end{aligned}$$
+(R: \texttt{pnorm(21.5, 21, 0.53) - pnorm(20.5, 21, 0.53)} gives 0.6545)}
 \end{enumerate}
 \newpage
 \item Let $\bar{X}$ be the mean of a random sample of size $n=15$ from a distribution with mean $\mu=80$ and variance $\sigma^2=60$.  Use the Chebysehv's inequality to find a lower bound for $P(74<\bar{X}<86)$. \\ {\Red $$\begin{aligned}
