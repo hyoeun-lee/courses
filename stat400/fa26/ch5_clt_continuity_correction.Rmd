@@ -1,0 +1,406 @@
+---
+title: "Chapter 5 Visual Demos: CLT and Continuity Correction"
+subtitle: "STAT 400"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      fig.align = "center", dpi = 110)
+set.seed(400)   # reproducible simulations
+```
+
+Only base R is used, so no packages need to be installed.
+
+# Part 1. Central Limit Theorem: what does the distribution of $\bar X$ look like?
+
+**Plan.** For each population we draw many random samples of size $n$, compute the sample mean of each one, and draw a histogram of those sample means. The red curve is the CLT approximation $N(\mu,\ \sigma^2/n)$.
+
+* Continuous populations: the histogram is on the density scale, so it is directly comparable to the red pdf.
+* Discrete populations: $\bar X$ can only take the values $0, 1/n, 2/n, \dots$, so we draw bars of width $1/n$ whose **area** equals $P(\bar X = v)$. Again this is comparable to the red pdf.
+
+Change `n_small`, `n_large`, or `N` below and re-knit to experiment.
+
+```{r clt-settings}
+n_small <- 5      # "small" sample size
+n_large <- 50     # "large" sample size
+N       <- 20000  # number of simulated samples for each (population, n)
+```
+
+## Populations
+
+Each population is stored with its mean, standard deviation, a random number generator, and (for plotting) its pdf or pmf.
+
+```{r populations}
+pops <- list(
+  # ---- continuous ----
+  Normal = list(label = "Normal(0, 1)", discrete = FALSE,
+                draw = function(m) rnorm(m), mu = 0, sigma = 1,
+                dens = function(x) dnorm(x), xlim = c(-4, 4)),
+  Uniform = list(label = "Uniform(0, 1)", discrete = FALSE,
+                 draw = function(m) runif(m), mu = 0.5, sigma = sqrt(1/12),
+                 dens = function(x) dunif(x), xlim = c(-0.2, 1.2)),
+  Exponential = list(label = "Exponential (mean 1), right-skewed", discrete = FALSE,
+                     draw = function(m) rexp(m, 1), mu = 1, sigma = 1,
+                     dens = function(x) dexp(x, 1), xlim = c(0, 5)),
+  Bimodal = list(label = "Two-humped (50/50 mix of N(-1.5, 0.5^2), N(1.5, 0.5^2))",
+                 discrete = FALSE,
+                 draw = function(m) ifelse(runif(m) < 0.5, rnorm(m, -1.5, 0.5), rnorm(m, 1.5, 0.5)),
+                 mu = 0, sigma = sqrt(0.25 + 1.5^2),
+                 dens = function(x) 0.5 * dnorm(x, -1.5, 0.5) + 0.5 * dnorm(x, 1.5, 0.5),
+                 xlim = c(-4, 4)),
+  # ---- discrete (integer valued) ----
+  Die = list(label = "Fair die (discrete uniform on 1..6)", discrete = TRUE,
+             draw = function(m) sample(1:6, m, replace = TRUE),
+             mu = 3.5, sigma = sqrt(35/12), support = 1:6, pmf = rep(1/6, 6)),
+  Bernoulli = list(label = "Bernoulli(p = 0.1), very skewed", discrete = TRUE,
+                   draw = function(m) rbinom(m, 1, 0.1),
+                   mu = 0.1, sigma = sqrt(0.1 * 0.9), support = 0:1, pmf = c(0.9, 0.1))
+)
+
+col_bar   <- "#dbe8f5"   # light blue : bars / histogram
+col_event <- "#7fb5dc"   # blue       : bars that belong to the event
+col_curve <- "#cb181d"   # red        : normal curve
+col_shade <- adjustcolor("#fd8d3c", alpha.f = 0.38)  # orange: normal area
+```
+
+## Plotting functions
+
+```{r clt-functions}
+# draw m*n values and return the m sample means
+sim_means <- function(pop, n, m = N) rowMeans(matrix(pop$draw(m * n), nrow = m, ncol = n))
+
+plot_population <- function(pop) {
+  if (pop$discrete) {
+    plot(pop$support, pop$pmf, type = "h", lwd = 8, lend = 1, col = col_event,
+         xlim = range(pop$support) + c(-0.8, 0.8), ylim = c(0, max(pop$pmf) * 1.15),
+         xlab = "x", ylab = "probability",
+         main = paste0("Population\n", pop$label), cex.main = 0.85)
+  } else {
+    xs <- seq(pop$xlim[1], pop$xlim[2], length.out = 600)
+    plot(xs, pop$dens(xs), type = "n", xlab = "x", ylab = "density",
+         ylim = c(0, max(pop$dens(xs)) * 1.1),
+         main = paste0("Population\n", pop$label), cex.main = 0.85)
+    polygon(c(xs[1], xs, xs[length(xs)]), c(0, pop$dens(xs), 0), col = col_bar, border = col_event, lwd = 2)
+  }
+}
+
+plot_xbar <- function(pop, n, m = N, main = NULL) {
+  xbar <- sim_means(pop, n, m)
+  se   <- pop$sigma / sqrt(n)
+  xl   <- pop$mu + c(-4, 4) * se
+  xs   <- seq(xl[1], xl[2], length.out = 500)
+  if (is.null(main))
+    main <- sprintf("Sample mean, n = %d\nmean = %.2f, SD = %.3f", n, pop$mu, se)
+
+  if (pop$discrete) {                       # sums are integers: area of each bar = P(Xbar = v)
+    tab <- table(round(xbar * n)) / m
+    v   <- as.numeric(names(tab)) / n
+    h   <- as.numeric(tab) * n              # probability / bar width (width = 1/n)
+    ymax <- max(h, dnorm(pop$mu, pop$mu, se)) * 1.15
+    plot(NA, xlim = xl, ylim = c(0, ymax), xlab = "sample mean", ylab = "density",
+         main = main, cex.main = 0.85)
+    rect(v - 0.5 / n, 0, v + 0.5 / n, h, col = col_bar, border = "white")
+  } else {
+    br   <- seq(xl[1], xl[2], length.out = 41)
+    keep <- xbar[xbar >= xl[1] & xbar <= xl[2]]
+    cnt  <- hist(keep, breaks = br, plot = FALSE)$counts
+    h    <- cnt / (m * diff(br))            # density scale (uses all m samples)
+    ymax <- max(h, dnorm(pop$mu, pop$mu, se)) * 1.15
+    plot(NA, xlim = xl, ylim = c(0, ymax), xlab = "sample mean", ylab = "density",
+         main = main, cex.main = 0.85)
+    rect(br[-length(br)], 0, br[-1], h, col = col_bar, border = "white")
+  }
+  lines(xs, dnorm(xs, pop$mu, se), col = col_curve, lwd = 2.5)
+}
+
+# one row per population: [population | small n | large n]
+clt_grid <- function(pop_names, n_small, n_large) {
+  op <- par(mfrow = c(length(pop_names), 3), mar = c(4, 4, 3.6, 1))
+  on.exit(par(op))
+  for (nm in pop_names) {
+    plot_population(pops[[nm]])
+    plot_xbar(pops[[nm]], n_small)
+    plot_xbar(pops[[nm]], n_large)
+  }
+}
+```
+
+## Continuous populations
+
+```{r clt-continuous, fig.width=11, fig.height=12}
+clt_grid(c("Normal", "Uniform", "Exponential", "Bimodal"), n_small, n_large)
+```
+
+**What to notice**
+
+* *Normal population:* $\bar X$ is exactly normal for **any** $n$. The red curve fits already at `n_small`; only the spread shrinks.
+* *Uniform population (symmetric):* $\bar X$ is already close to normal at `n_small`.
+* *Exponential population (skewed):* at `n_small` the histogram is still skewed, and the normal curve even puts some area below 0. At `n_large` the fit is good, but not perfect.
+* *Two-humped population:* the sample mean is a single hump even though the population has two. Averaging smooths out the shape.
+* In every row the center stays at $\mu$ and the spread shrinks like $\sigma/\sqrt n$. Look at the "SD" in the panel titles.
+
+## Discrete populations
+
+```{r clt-discrete, fig.width=11, fig.height=6}
+clt_grid(c("Die", "Bernoulli"), n_small, n_large)
+```
+
+**What to notice**
+
+* Even for a discrete population, $\bar X$ becomes bell shaped. The bars are on a grid of spacing $1/n$, which is finer for larger $n$.
+* The die is symmetric, so the fit is good quickly. The Bernoulli(0.1) population is very skewed, and at `n_large = 50` ($np = 5$) the bars are still visibly lopsided. This matches the rule of thumb $np \ge 5$ and $n(1-p) \ge 5$ as the **minimum**.
+* Because the exact distribution is a set of bars while the red curve is smooth, a continuity correction is needed whenever we compute probabilities. That is Part 2.
+
+## Watching the shape change as $n$ grows
+
+For the two most skewed populations, we increase $n$ step by step.
+
+```{r clt-progression, fig.width=14, fig.height=6}
+ns <- c(1, 2, 5, 10, 30, 100)
+op <- par(mfrow = c(2, length(ns)), mar = c(4, 4, 3.6, 1))
+for (nm in c("Exponential", "Bernoulli"))
+  for (n in ns)
+    plot_xbar(pops[[nm]], n,
+              main = sprintf("%s, n = %d\nSD = %.3f", nm, n, pops[[nm]]$sigma / sqrt(n)))
+par(op)
+```
+
+## How good is the CLT approximation? (exact vs. approximate numbers)
+
+For the Exponential(mean 1) population, the sum of $n$ observations is exactly Gamma($n$, rate 1), so we can compute an upper-tail probability exactly and compare it with the CLT answer. We use the cutoff $\mu + 1.645\,\sigma/\sqrt n$, for which the CLT answer is always $P(Z > 1.645) \approx 0.05$.
+
+```{r clt-table}
+n_vals <- c(5, 10, 30, 50, 100, 200, 500)
+cutoff <- 1 + 1.645 / sqrt(n_vals)                       # mu + 1.645 * sigma / sqrt(n)
+exact  <- pgamma(n_vals * cutoff, shape = n_vals, rate = 1, lower.tail = FALSE)
+clt    <- pnorm(cutoff, mean = 1, sd = 1 / sqrt(n_vals), lower.tail = FALSE)
+knitr::kable(data.frame(n = n_vals, Cutoff = round(cutoff, 3), `Exact` = round(exact, 4),
+                        `CLT (normal)` = round(clt, 4), `Difference` = round(clt - exact, 4),
+                        check.names = FALSE),
+             caption = "P(sample mean > cutoff) for the Exponential(mean 1) population")
+```
+
+The exact tail probability is larger than 0.05 for small $n$ because of the right skew, and it approaches the CLT value of 0.05 only slowly as $n$ grows.
+
+------------------------------------------------------------------------
+
+# Part 2. Continuity correction
+
+**Setup.** A discrete $X$ (Binomial or Poisson) is approximated by a continuous $X^* \sim N(\mu, \sigma^2)$ with the same mean and variance.
+
+**Key picture.** Draw the pmf as a **step function**: over each integer $v$, a bar of width 1 centered at $v$ and height $P(X = v)$. Because the width is 1, **area of the bar = $P(X = v)$**. The bar for $v$ covers the interval $(v - 0.5,\ v + 0.5)$. So the exact probability is an area made of whole bars, and the normal approximation should be an area measured against the same bars.
+
+## Plotting functions
+
+```{r cc-functions}
+# distribution "families": pmf, mean, sd, largest value worth considering
+fam_binom <- function(n, p) list(name = sprintf("Bin(%d, %g)", n, p), pmf = function(x) dbinom(x, n, p),
+                                 mu = n * p, sigma = sqrt(n * p * (1 - p)), maxx = n)
+fam_pois  <- function(lambda) list(name = sprintf("Poisson(%g)", lambda), pmf = function(x) dpois(x, lambda),
+                                   mu = lambda, sigma = sqrt(lambda), maxx = qpois(1 - 1e-12, lambda))
+
+# event P(X <= k), etc.: which integers belong to it, and the matching normal interval
+event_info <- function(kind, k) {
+  op  <- c(le = "<=", lt = "<", ge = ">=", gt = ">", eq = "==")[[kind]]
+  sym <- c(le = "<=", lt = "<", ge = ">=", gt = ">", eq = "=")[[kind]]
+  list(inc  = switch(kind, le = function(v) v <= k, lt = function(v) v < k, ge = function(v) v >= k,
+                           gt = function(v) v > k,  eq = function(v) v == k),
+       lab     = call("paste", "P(", call(op, quote(X), k), ")"),      # plotmath label, used in plot titles
+       lab_chr = sprintf("P(X %s %d)", sym, k),         # text label, used in tables
+       cc   = switch(kind, le = c(-Inf, k + 0.5), lt = c(-Inf, k - 0.5), ge = c(k - 0.5, Inf),
+                           gt = c(k + 0.5, Inf),  eq = c(k - 0.5, k + 0.5)),
+       nocc = switch(kind, le = c(-Inf, k), lt = c(-Inf, k), ge = c(k, Inf), gt = c(k, Inf), eq = c(k, k)))
+}
+
+# one panel. mode = "exact" (bars only), "nocc" (normal area, no correction), "cc" (normal area, corrected)
+panel <- function(fam, k, kind = "le", mode = c("exact", "nocc", "cc"), xlim = NULL) {
+  mode <- match.arg(mode)
+  ev   <- event_info(kind, k)
+  if (is.null(xlim)) xlim <- fam$mu + c(-3.5, 3.5) * fam$sigma
+  v <- max(0, floor(xlim[1])):min(fam$maxx, ceiling(xlim[2]))
+  p <- fam$pmf(v)
+  allv  <- 0:fam$maxx
+  exact <- sum(fam$pmf(allv)[ev$inc(allv)])
+
+  reg    <- if (mode == "cc") ev$cc else ev$nocc
+  approx <- if (reg[1] < reg[2]) pnorm(reg[2], fam$mu, fam$sigma) - pnorm(reg[1], fam$mu, fam$sigma) else 0
+  fin    <- unique(reg[is.finite(reg)])
+
+  line1 <- if (mode == "exact") "Exact: area of the bars" else {
+    where <- if (length(fin) == 1 && reg[1] == reg[2]) sprintf("at x = %g (zero width)", fin) else
+             sprintf("boundary %s", paste(fin, collapse = " and "))
+    sprintf("Normal area, %s", where)
+  }
+  line2 <- if (mode == "exact") bquote(.(ev$lab) == .(sprintf("%.4f", exact))) else
+           bquote(.(ev$lab) %~~% .(sprintf("%.4f", approx)) * "   (error " * .(sprintf("%+.4f", approx - exact)) * ")")
+
+  ymax <- max(p, if (mode != "exact") dnorm(fam$mu, fam$mu, fam$sigma)) * 1.15
+  plot(NA, xlim = xlim, ylim = c(0, ymax), xlab = "x", ylab = "probability / density", main = "")
+  title(main = line1, cex.main = 0.85, line = 2.1)
+  mtext(line2, side = 3, line = 0.8, font = 2, cex = 0.85)
+
+  # bars: blue = belongs to the event
+  rect(v - 0.5, 0, v + 0.5, p, col = ifelse(ev$inc(v), col_event, col_bar),
+       border = if (length(v) > 40) NA else "white")
+  # the pmf as a step function
+  lines(c(rbind(v - 0.5, v + 0.5)), rep(p, each = 2), col = "grey25", lwd = 1.3)
+
+  if (mode != "exact") {
+    lo <- max(reg[1], xlim[1]); hi <- min(reg[2], xlim[2])
+    if (lo < hi) {
+      xs <- seq(lo, hi, length.out = 300)
+      polygon(c(lo, xs, hi), c(0, dnorm(xs, fam$mu, fam$sigma), 0), col = col_shade, border = NA)
+    }
+    xs <- seq(xlim[1], xlim[2], length.out = 500)
+    lines(xs, dnorm(xs, fam$mu, fam$sigma), col = col_curve, lwd = 2.5)
+    abline(v = fin, lty = 2, lwd = 1.5)
+  }
+  invisible(c(exact = exact, approx = approx))
+}
+
+# exact / no correction / with correction side by side
+three_panels <- function(fam, k, kind = "le", xlim = NULL) {
+  op <- par(mfrow = c(1, 3), mar = c(4, 4, 4, 1)); par(cex = 1); on.exit(par(op))
+  panel(fam, k, kind, "exact", xlim)
+  panel(fam, k, kind, "nocc",  xlim)
+  panel(fam, k, kind, "cc",    xlim)
+}
+
+# numbers for all five event types
+cc_table <- function(fam, k) {
+  kinds <- c("eq", "lt", "le", "ge", "gt")
+  out <- t(sapply(kinds, function(kd) {
+    pdf(NULL); on.exit(dev.off())
+    c(exact = panel(fam, k, kd, "exact")[["exact"]],
+      nocc  = panel(fam, k, kd, "nocc")[["approx"]],
+      cc    = panel(fam, k, kd, "cc")[["approx"]])
+  }))
+  data.frame(Event = sapply(kinds, function(kd) event_info(kd, k)$lab_chr),
+             `Normal interval used` = sapply(kinds, function(kd) {
+               r <- event_info(kd, k)$cc
+               if (is.infinite(r[1])) sprintf("X* < %g", r[2]) else if (is.infinite(r[2])) sprintf("X* > %g", r[1])
+               else sprintf("%g < X* < %g", r[1], r[2]) }),
+             Exact = round(out[, "exact"], 4),
+             `No correction` = round(out[, "nocc"], 4),
+             `With correction` = round(out[, "cc"], 4),
+             check.names = FALSE, row.names = NULL)
+}
+```
+
+## Example 1: $X \sim \text{Bin}(20,\ 0.3)$
+
+Here $np = 6 \ge 5$ and $n(1-p) = 14 \ge 5$, so the normal approximation is allowed, with $X^* \sim N(6,\ 4.2)$. We approximate $P(X \le 6)$.
+
+First, the objects involved: the pmf as bars (and as a step function) and the normal pdf on top.
+
+```{r cc-overview, fig.width=7, fig.height=4.5}
+fam <- fam_binom(20, 0.3)
+v <- 0:14
+plot(NA, xlim = c(-0.5, 14.5), ylim = c(0, 0.2), xlab = "x", ylab = "probability / density",
+     main = "Bin(20, 0.3): bars = pmf, red = N(6, 4.2) pdf")
+rect(v - 0.5, 0, v + 0.5, fam$pmf(v), col = col_bar, border = "white")
+lines(c(rbind(v - 0.5, v + 0.5)), rep(fam$pmf(v), each = 2), col = "grey25", lwd = 1.3)
+xs <- seq(-0.5, 14.5, length.out = 400)
+lines(xs, dnorm(xs, fam$mu, fam$sigma), col = col_curve, lwd = 2.5)
+```
+
+### $P(X \le 6)$: three ways to measure the area
+
+* **Left:** the exact probability is the total area of the blue bars for $x = 0, \dots, 6$. This area stops at the **right edge of the bar for 6, which is 6.5**.
+* **Middle:** without the correction we measure the normal area up to 6. That cuts the bar for 6 in half, so half a bar is lost.
+* **Right:** with the correction we measure the normal area up to 6.5. This lines up with the right edge of the bar.
+
+```{r cc-le, fig.width=13, fig.height=4.5}
+three_panels(fam, k = 6, kind = "le")
+```
+
+### $P(X = 6)$: why the correction is necessary
+
+Without the correction, $P(X^* = 6) = 0$ for a continuous variable, which is useless. The bar for 6 has width 1, so we measure the normal area over the same interval, $(5.5,\ 6.5)$.
+
+```{r cc-eq, fig.width=13, fig.height=4.5}
+three_panels(fam, k = 6, kind = "eq", xlim = c(1.5, 10.5))
+```
+
+### Which boundary to use for each inequality
+
+The rule is: **move the boundary to the edge of the bar so that the bar for $k$ is included or excluded exactly as the inequality says.**
+
+```{r cc-four, fig.width=11, fig.height=8}
+op <- par(mfrow = c(2, 2), mar = c(4, 4, 4, 1))
+for (kd in c("lt", "le", "ge", "gt")) panel(fam, 5, kd, "cc")
+par(op)
+```
+
+```{r cc-rules-table}
+knitr::kable(cc_table(fam, k = 5), caption = "Bin(20, 0.3), k = 5: exact vs. normal approximation")
+```
+
+The "No correction" column is clearly off, and the "With correction" column is close to the exact values for all five events.
+
+### Does the correction still matter when $n$ is large?
+
+We compare the error of the two methods for $P(X \le np)$ with $p = 0.3$.
+
+```{r cc-error, fig.width=7, fig.height=4.5}
+n_seq <- c(10, 20, 50, 100, 200, 500, 1000)
+p0 <- 0.3
+err <- sapply(n_seq, function(n) {
+  k  <- floor(n * p0)
+  ex <- pbinom(k, n, p0)
+  s  <- sqrt(n * p0 * (1 - p0))
+  c(nocc = abs(pnorm(k, n * p0, s) - ex), cc = abs(pnorm(k + 0.5, n * p0, s) - ex))
+})
+matplot(n_seq, t(err), type = "b", pch = 16, lty = 1, lwd = 2, col = c("grey40", col_curve),
+        log = "xy", xlab = "n (log scale)", ylab = "absolute error (log scale)",
+        main = expression("Error of the normal approximation to " * P(X <= np) * ", p = 0.3"))
+legend("topright", c("no correction", "with continuity correction"), col = c("grey40", col_curve),
+       lty = 1, pch = 16, lwd = 2, bty = "n")
+```
+
+Both errors shrink as $n$ grows, but the corrected version is more accurate at every $n$.
+
+## Example 2 (preview for next class): $X \sim \text{Poisson}(\lambda)$
+
+The idea is identical. The bars are the Poisson pmf, and $X^* \sim N(\lambda, \lambda)$. The rule of thumb is $\lambda > 10$.
+
+### $\lambda = 12$: approximate $P(X \le 9)$
+
+```{r cc-pois12, fig.width=13, fig.height=4.5}
+three_panels(fam_pois(12), k = 9, kind = "le")
+```
+
+### A case where the approximation is poor: $\lambda = 3$
+
+The Poisson(3) pmf is skewed and the normal curve even puts area below 0, so even the corrected answer is noticeably off. This is why we require $\lambda$ to be large.
+
+```{r cc-pois3, fig.width=13, fig.height=4.5}
+three_panels(fam_pois(3), k = 2, kind = "le", xlim = c(-3, 10))
+```
+
+### A realistic case: $\lambda = 219$, $P(X \le 200)$
+
+This is the setting of the power-plant accident question (0.6 accidents per day for 365 days). The bars are very thin at this scale, so all three panels look alike, but the half-bar still changes the answer in the third decimal place. Here are the numbers:
+
+```{r cc-pois219, fig.width=13, fig.height=4.5}
+three_panels(fam_pois(219), k = 200, kind = "le", xlim = c(180, 215))
+```
+
+```{r cc-pois219-table}
+knitr::kable(cc_table(fam_pois(219), k = 200), caption = "Poisson(219), k = 200")
+```
+
+**Summary of the rule** (same for Binomial and Poisson, for integer $k$):
+
+| Exact probability | Approximate with $X^*$ |
+|:--|:--|
+| $P(X = k)$ | $P(k - 0.5 < X^* < k + 0.5)$ |
+| $P(X \le k)$ | $P(X^* < k + 0.5)$ |
+| $P(X < k)$ | $P(X^* < k - 0.5)$ |
+| $P(X \ge k)$ | $P(X^* > k - 0.5)$ |
+| $P(X > k)$ | $P(X^* > k + 0.5)$ |
