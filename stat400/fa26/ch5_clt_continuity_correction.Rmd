@@ -5,36 +5,20 @@ output:
   html_document:
     toc: true
     toc_float: true
-    code_folding: show
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+knitr::opts_chunk$set(echo = FALSE,   # set to TRUE to show the R code
+                       message = FALSE, warning = FALSE,
                       fig.align = "center", dpi = 110)
 set.seed(400)   # reproducible simulations
 ```
-
-Only base R is used, so no packages need to be installed.
-
-# Part 1. Central Limit Theorem: what does the distribution of $\bar X$ look like?
-
-**Plan.** For each population we draw many random samples of size $n$, compute the sample mean of each one, and draw a histogram of those sample means. The red curve is the CLT approximation $N(\mu,\ \sigma^2/n)$.
-
-* Continuous populations: the histogram is on the density scale, so it is directly comparable to the red pdf.
-* Discrete populations: $\bar X$ can only take the values $0, 1/n, 2/n, \dots$, so we draw bars of width $1/n$ whose **area** equals $P(\bar X = v)$. Again this is comparable to the red pdf.
-
-Change `n_small`, `n_large`, or `N` below and re-knit to experiment.
 
 ```{r clt-settings}
 n_small <- 5      # "small" sample size
 n_large <- 50     # "large" sample size
 N       <- 20000  # number of simulated samples for each (population, n)
 ```
-
-## Populations
-
-Each population is stored with its mean, standard deviation, a random number generator, and (for plotting) its pdf or pmf.
-
 ```{r populations}
 pops <- list(
   # ---- continuous ----
@@ -67,9 +51,6 @@ col_event <- "#7fb5dc"   # blue       : bars that belong to the event
 col_curve <- "#cb181d"   # red        : normal curve
 col_shade <- adjustcolor("#fd8d3c", alpha.f = 0.38)  # orange: normal area
 ```
-
-## Plotting functions
-
 ```{r clt-functions}
 # draw m*n values and return the m sample means
 sim_means <- function(pop, n, m = N) rowMeans(matrix(pop$draw(m * n), nrow = m, ncol = n))
@@ -129,74 +110,6 @@ clt_grid <- function(pop_names, n_small, n_large) {
   }
 }
 ```
-
-## Continuous populations
-
-```{r clt-continuous, fig.width=11, fig.height=12}
-clt_grid(c("Normal", "Uniform", "Exponential", "Bimodal"), n_small, n_large)
-```
-
-**What to notice**
-
-* *Normal population:* $\bar X$ is exactly normal for **any** $n$. The red curve fits already at `n_small`; only the spread shrinks.
-* *Uniform population (symmetric):* $\bar X$ is already close to normal at `n_small`.
-* *Exponential population (skewed):* at `n_small` the histogram is still skewed, and the normal curve even puts some area below 0. At `n_large` the fit is good, but not perfect.
-* *Two-humped population:* the sample mean is a single hump even though the population has two. Averaging smooths out the shape.
-* In every row the center stays at $\mu$ and the spread shrinks like $\sigma/\sqrt n$. Look at the "SD" in the panel titles.
-
-## Discrete populations
-
-```{r clt-discrete, fig.width=11, fig.height=6}
-clt_grid(c("Die", "Bernoulli"), n_small, n_large)
-```
-
-**What to notice**
-
-* Even for a discrete population, $\bar X$ becomes bell shaped. The bars are on a grid of spacing $1/n$, which is finer for larger $n$.
-* The die is symmetric, so the fit is good quickly. The Bernoulli(0.1) population is very skewed, and at `n_large = 50` ($np = 5$) the bars are still visibly lopsided. This matches the rule of thumb $np \ge 5$ and $n(1-p) \ge 5$ as the **minimum**.
-* Because the exact distribution is a set of bars while the red curve is smooth, a continuity correction is needed whenever we compute probabilities. That is Part 2.
-
-## Watching the shape change as $n$ grows
-
-For the two most skewed populations, we increase $n$ step by step.
-
-```{r clt-progression, fig.width=14, fig.height=6}
-ns <- c(1, 2, 5, 10, 30, 100)
-op <- par(mfrow = c(2, length(ns)), mar = c(4, 4, 3.6, 1))
-for (nm in c("Exponential", "Bernoulli"))
-  for (n in ns)
-    plot_xbar(pops[[nm]], n,
-              main = sprintf("%s, n = %d\nSD = %.3f", nm, n, pops[[nm]]$sigma / sqrt(n)))
-par(op)
-```
-
-## How good is the CLT approximation? (exact vs. approximate numbers)
-
-For the Exponential(mean 1) population, the sum of $n$ observations is exactly Gamma($n$, rate 1), so we can compute an upper-tail probability exactly and compare it with the CLT answer. We use the cutoff $\mu + 1.645\,\sigma/\sqrt n$, for which the CLT answer is always $P(Z > 1.645) \approx 0.05$.
-
-```{r clt-table}
-n_vals <- c(5, 10, 30, 50, 100, 200, 500)
-cutoff <- 1 + 1.645 / sqrt(n_vals)                       # mu + 1.645 * sigma / sqrt(n)
-exact  <- pgamma(n_vals * cutoff, shape = n_vals, rate = 1, lower.tail = FALSE)
-clt    <- pnorm(cutoff, mean = 1, sd = 1 / sqrt(n_vals), lower.tail = FALSE)
-knitr::kable(data.frame(n = n_vals, Cutoff = round(cutoff, 3), `Exact` = round(exact, 4),
-                        `CLT (normal)` = round(clt, 4), `Difference` = round(clt - exact, 4),
-                        check.names = FALSE),
-             caption = "P(sample mean > cutoff) for the Exponential(mean 1) population")
-```
-
-The exact tail probability is larger than 0.05 for small $n$ because of the right skew, and it approaches the CLT value of 0.05 only slowly as $n$ grows.
-
-------------------------------------------------------------------------
-
-# Part 2. Continuity correction
-
-**Setup.** A discrete $X$ (Binomial or Poisson) is approximated by a continuous $X^* \sim N(\mu, \sigma^2)$ with the same mean and variance.
-
-**Key picture.** Draw the pmf as a **step function**: over each integer $v$, a bar of width 1 centered at $v$ and height $P(X = v)$. Because the width is 1, **area of the bar = $P(X = v)$**. The bar for $v$ covers the interval $(v - 0.5,\ v + 0.5)$. So the exact probability is an area made of whole bars, and the normal approximation should be an area measured against the same bars.
-
-## Plotting functions
-
 ```{r cc-functions}
 # distribution "families": pmf, mean, sd, largest value worth considering
 fam_binom <- function(n, p) list(name = sprintf("Bin(%d, %g)", n, p), pmf = function(x) dbinom(x, n, p),
@@ -292,9 +205,134 @@ cc_table <- function(fam, k) {
 }
 ```
 
+```{r by-hand-helper}
+# "by hand" table: z-score(s), z-table value (z rounded to 2 decimals), and software value
+by_hand <- function(fam, k, kind = "le") {
+  ev <- event_info(kind, k)
+  one <- function(reg, method) {
+    fin  <- reg[is.finite(reg)]
+    zr   <- round((reg - fam$mu) / fam$sigma, 2)
+    nonempty <- reg[1] < reg[2]
+    tab  <- if (nonempty) round(pnorm(zr[2]), 4) - round(pnorm(zr[1]), 4) else 0   # 4-decimal table entries
+    soft <- if (nonempty) pnorm(reg[2], fam$mu, fam$sigma) - pnorm(reg[1], fam$mu, fam$sigma) else 0
+    data.frame(Method = method,
+               `Normal boundary` = if (nonempty) paste(fin, collapse = " and ") else sprintf("%g (zero width)", fin[1]),
+               `z-score` = if (nonempty) paste(sprintf("%.2f", zr[is.finite(zr)]), collapse = " and ") else "-",
+               `From z-table` = sprintf("%.4f", tab), `From software` = sprintf("%.4f", soft),
+               check.names = FALSE)
+  }
+  allv <- 0:fam$maxx
+  ex <- sum(fam$pmf(allv)[ev$inc(allv)])
+  rbind(one(ev$nocc, "Normal, no correction"), one(ev$cc, "Normal, with correction"),
+        data.frame(Method = "Exact (pmf)", `Normal boundary` = "-", `z-score` = "-",
+                   `From z-table` = "-", `From software` = sprintf("%.4f", ex), check.names = FALSE))
+}
+```
+
+This document has two parts.
+
+* **Part 1** shows what the Central Limit Theorem (CLT) says about the distribution of the sample mean $\bar X$ for different populations and sample sizes.
+* **Part 2** shows why a **continuity correction** is needed when a discrete distribution (Binomial or Poisson) is approximated by a normal distribution.
+
+# Part 1. Central Limit Theorem: what does the distribution of $\bar X$ look like?
+
+**CLT.** Let $X_1, \dots, X_n$ be a random sample (i.i.d.) from a population with mean $\mu$ and standard deviation $\sigma$. Then $E[\bar X] = \mu$ and $SD(\bar X) = \sigma/\sqrt n$, and for large $n$
+
+$$\bar X \approx N\left(\mu,\ \frac{\sigma^2}{n}\right).$$
+
+If the population itself is normal, this is exact for every $n$. If the population is not normal and $n$ is small, the approximation can be poor. The pictures below show how this plays out.
+
+**How to read the pictures.**
+
+* Each row is one population. The **left** panel is the population distribution itself. The **middle** and **right** panels are the distribution of the sample mean for $n = `r n_small`$ and $n = `r n_large`$.
+* For each population and each $n$, we generated `r format(N, big.mark = ",")` random samples of size $n$, computed $\bar X$ for each sample, and drew a histogram of those `r format(N, big.mark = ",")` sample means (on the density scale). The histograms are random, so they wobble a little around the true shape.
+* The **red curve** is the CLT approximation, the normal pdf with mean $\mu$ and standard deviation $\sigma/\sqrt n$. If the histogram follows the red curve, the CLT approximation is good.
+* For a **discrete** population, $\bar X$ can only take the values $0, 1/n, 2/n, \dots$, so the histogram is a set of bars of width $1/n$ whose **area** equals $P(\bar X = v)$. This puts it on the same scale as the red pdf.
+* The horizontal axis of each sample-mean panel is zoomed to $\mu \pm 4$ standard deviations of $\bar X$. The panels at larger $n$ therefore look about as wide as the ones at smaller $n$. To see the spread shrinking, read the axis numbers and the SD printed in each panel title.
+
+## Continuous populations
+
+```{r clt-continuous, fig.width=11, fig.height=12}
+clt_grid(c("Normal", "Uniform", "Exponential", "Bimodal"), n_small, n_large)
+```
+
+**What to notice**
+
+* *Normal population:* $\bar X$ is exactly normal for **any** $n$. The red curve fits already at $n = `r n_small`$; only the spread shrinks.
+* *Uniform population (symmetric):* $\bar X$ is already close to normal at $n = `r n_small`$.
+* *Exponential population (skewed):* at $n = `r n_small`$ the histogram is still skewed, and the normal curve even puts some area below 0 although the population cannot be negative. At $n = `r n_large`$ the fit is good, but not perfect.
+* *Two-humped population:* the sample mean is a single hump even though the population has two. Averaging smooths out the shape.
+* In every row the center stays at $\mu$ and the spread shrinks like $\sigma/\sqrt n$. Look at the "SD" in the panel titles.
+
+## Discrete populations
+
+```{r clt-discrete, fig.width=11, fig.height=6}
+clt_grid(c("Die", "Bernoulli"), n_small, n_large)
+```
+
+**What to notice**
+
+* Even for a discrete population, $\bar X$ becomes bell shaped. The bars are on a grid of spacing $1/n$, which is finer for larger $n$.
+* The die is symmetric, so the fit is good quickly. The Bernoulli(0.1) population is very skewed, and at $n = 50$ ($np = 5$) the bars are still visibly lopsided. This matches the rule of thumb $np \ge 5$ and $n(1-p) \ge 5$ as the **minimum**.
+* Because the exact distribution is a set of bars while the red curve is smooth, a continuity correction is needed whenever we compute probabilities. That is Part 2.
+
+## Watching the shape change as $n$ grows
+
+For the two most skewed populations, we increase $n$ step by step. Top row: Exponential (continuous). Bottom row: Bernoulli(0.1) (discrete). For $n = 1$ the "sample mean" is a single observation, so that panel is just the population.
+
+```{r clt-progression, fig.width=14, fig.height=6}
+ns <- c(1, 2, 5, 10, 30, 100)
+op <- par(mfrow = c(2, length(ns)), mar = c(4, 4, 3.6, 1))
+for (nm in c("Exponential", "Bernoulli"))
+  for (n in ns)
+    plot_xbar(pops[[nm]], n,
+              main = sprintf("%s, n = %d\nSD = %.3f", nm, n, pops[[nm]]$sigma / sqrt(n)))
+par(op)
+```
+
+**What to notice.** The skewness fades gradually as $n$ grows, and the histogram settles onto the red curve. The Exponential row looks close to normal by about $n = 30$. The Bernoulli(0.1) row needs a larger $n$, because the population is more extreme. The spread of $\bar X$ (printed as SD in each title) keeps shrinking like $1/\sqrt n$.
+
+## How good is the CLT approximation? (exact vs. approximate numbers)
+
+For the Exponential(mean 1) population, the sum of $n$ observations is exactly Gamma($n$, rate 1), so we can compute an upper-tail probability exactly and compare it with the CLT answer. We use the cutoff $\mu + 1.645\,\sigma/\sqrt n$, for which the CLT answer is always $P(Z > 1.645) \approx 0.05$.
+
+```{r clt-table}
+n_vals <- c(5, 10, 30, 50, 100, 200, 500)
+cutoff <- 1 + 1.645 / sqrt(n_vals)                       # mu + 1.645 * sigma / sqrt(n)
+exact  <- pgamma(n_vals * cutoff, shape = n_vals, rate = 1, lower.tail = FALSE)
+clt    <- pnorm(cutoff, mean = 1, sd = 1 / sqrt(n_vals), lower.tail = FALSE)
+knitr::kable(data.frame(n = n_vals, Cutoff = round(cutoff, 3), `Exact` = round(exact, 4),
+                        `CLT (normal)` = round(clt, 4), `Difference` = round(clt - exact, 4),
+                        check.names = FALSE),
+             caption = "P(sample mean > cutoff) for the Exponential(mean 1) population")
+```
+
+"Difference" is (CLT value $-$ exact value). The exact tail probability is larger than 0.05 for small $n$ because of the right skew, and it approaches the CLT value of 0.05 only slowly as $n$ grows.
+
+------------------------------------------------------------------------
+
+# Part 2. Continuity correction
+
+**Setup.** A discrete $X$ (Binomial or Poisson) is approximated by a continuous $X^* \sim N(\mu, \sigma^2)$ with the same mean and variance.
+
+**Key picture.** Draw the pmf as a **step function**: over each integer $v$, a bar of width 1 centered at $v$ and height $P(X = v)$. Because the width is 1, **area of the bar = $P(X = v)$**. The bar for $v$ covers the interval $(v - 0.5,\ v + 0.5)$. So the exact probability is an area made of whole bars, and the normal approximation should be an area measured against the same bars.
+
+
+**How to read the pictures.**
+
+* **Light blue bars:** the exact pmf of $X$. Each bar has width 1 and is centered at an integer.
+* **Dark blue bars:** the values of $X$ that belong to the event we are computing.
+* **Black outline:** the same pmf drawn as a step function.
+* **Red curve:** the pdf of the approximating normal $X^*$.
+* **Orange shading:** the normal area used for the approximation. It is semi-transparent, so the bars show through.
+* **Dashed vertical line(s):** where the normal area starts or stops.
+* **Error** in a panel title means (approximation $-$ exact).
+
 ## Example 1: $X \sim \text{Bin}(20,\ 0.3)$
 
-Here $np = 6 \ge 5$ and $n(1-p) = 14 \ge 5$, so the normal approximation is allowed, with $X^* \sim N(6,\ 4.2)$. We approximate $P(X \le 6)$.
+Here $np = 6 \ge 5$ and $n(1-p) = 14 \ge 5$, so the normal approximation is allowed, with $X^* \sim N(6,\ 4.2)$. We approximate $P(X \le 6)$. For a Binomial, the rule from class is
+
+$$P(X \le k) \approx \Phi\left(\frac{k + 0.5 - np}{\sqrt{np(1-p)}}\right).$$
 
 First, the objects involved: the pmf as bars (and as a step function) and the normal pdf on top.
 
@@ -319,6 +357,14 @@ lines(xs, dnorm(xs, fam$mu, fam$sigma), col = col_curve, lwd = 2.5)
 three_panels(fam, k = 6, kind = "le")
 ```
 
+**By hand.** $X^* \sim N(6,\ 4.2)$, so $\sigma = \sqrt{4.2} \approx 2.05$ and $z = (x - 6)/2.05$.
+
+```{r cc-le-hand}
+knitr::kable(by_hand(fam, 6, "le"), caption = "Bin(20, 0.3): P(X <= 6)")
+```
+
+Without the correction we get $\Phi(0) = 0.5000$, which is far below the exact $0.6080$. With the correction, $P(X^* < 6.5) = \Phi\left(\frac{6.5 - 6}{2.05}\right) = \Phi(0.24) = 0.5948$ (z-table) or $0.5964$ (software). Both are close to the exact value.
+
 ### $P(X = 6)$: why the correction is necessary
 
 Without the correction, $P(X^* = 6) = 0$ for a continuous variable, which is useless. The bar for 6 has width 1, so we measure the normal area over the same interval, $(5.5,\ 6.5)$.
@@ -326,6 +372,12 @@ Without the correction, $P(X^* = 6) = 0$ for a continuous variable, which is use
 ```{r cc-eq, fig.width=13, fig.height=4.5}
 three_panels(fam, k = 6, kind = "eq", xlim = c(1.5, 10.5))
 ```
+
+```{r cc-eq-hand}
+knitr::kable(by_hand(fam, 6, "eq"), caption = "Bin(20, 0.3): P(X = 6)")
+```
+
+With the correction, $P(5.5 < X^* < 6.5) = \Phi(0.24) - \Phi(-0.24) = 0.5948 - 0.4052 = 0.1896$ (z-table) or $0.1927$ (software), compared with the exact $0.1916$.
 
 ### Which boundary to use for each inequality
 
@@ -341,7 +393,7 @@ par(op)
 knitr::kable(cc_table(fam, k = 5), caption = "Bin(20, 0.3), k = 5: exact vs. normal approximation")
 ```
 
-The "No correction" column is clearly off, and the "With correction" column is close to the exact values for all five events.
+In this table, "Normal interval used" is the interval for $X^*$ after the correction. The "No correction" column is clearly off, and the "With correction" column is close to the exact values for all five events.
 
 ### Does the correction still matter when $n$ is large?
 
@@ -363,16 +415,22 @@ legend("topright", c("no correction", "with continuity correction"), col = c("gr
        lty = 1, pch = 16, lwd = 2, bty = "n")
 ```
 
-Both errors shrink as $n$ grows, but the corrected version is more accurate at every $n$.
+The vertical axis is the absolute difference between the approximation and the exact probability, on a log scale. Both errors shrink as $n$ grows, but the corrected version is more accurate at every $n$ shown.
 
 ## Example 2 (preview for next class): $X \sim \text{Poisson}(\lambda)$
 
-The idea is identical. The bars are the Poisson pmf, and $X^* \sim N(\lambda, \lambda)$. The rule of thumb is $\lambda > 10$.
+The idea is identical. The bars are the Poisson pmf, and $X^* \sim N(\lambda, \lambda)$. The rule of thumb is $\lambda > 10$, and
+
+$$P(X \le k) \approx \Phi\left(\frac{k + 0.5 - \lambda}{\sqrt{\lambda}}\right).$$
 
 ### $\lambda = 12$: approximate $P(X \le 9)$
 
 ```{r cc-pois12, fig.width=13, fig.height=4.5}
 three_panels(fam_pois(12), k = 9, kind = "le")
+```
+
+```{r cc-pois12-hand}
+knitr::kable(by_hand(fam_pois(12), 9, "le"), caption = "Poisson(12): P(X <= 9), with X* ~ N(12, 12), sigma = 3.46")
 ```
 
 ### A case where the approximation is poor: $\lambda = 3$
@@ -383,6 +441,10 @@ The Poisson(3) pmf is skewed and the normal curve even puts area below 0, so eve
 three_panels(fam_pois(3), k = 2, kind = "le", xlim = c(-3, 10))
 ```
 
+```{r cc-pois3-hand}
+knitr::kable(by_hand(fam_pois(3), 2, "le"), caption = "Poisson(3): P(X <= 2), with X* ~ N(3, 3), sigma = 1.73")
+```
+
 ### A realistic case: $\lambda = 219$, $P(X \le 200)$
 
 This is the setting of the power-plant accident question (0.6 accidents per day for 365 days). The bars are very thin at this scale, so all three panels look alike, but the half-bar still changes the answer in the third decimal place. Here are the numbers:
@@ -390,6 +452,12 @@ This is the setting of the power-plant accident question (0.6 accidents per day 
 ```{r cc-pois219, fig.width=13, fig.height=4.5}
 three_panels(fam_pois(219), k = 200, kind = "le", xlim = c(180, 215))
 ```
+
+```{r cc-pois219-hand}
+knitr::kable(by_hand(fam_pois(219), 200, "le"), caption = "Poisson(219): P(X <= 200), with X* ~ N(219, 219), sigma = 14.80")
+```
+
+With the correction, $P(X \le 200) \approx \Phi\left(\frac{200.5 - 219}{\sqrt{219}}\right) = \Phi(-1.25) = 0.1056$ by the z-table.
 
 ```{r cc-pois219-table}
 knitr::kable(cc_table(fam_pois(219), k = 200), caption = "Poisson(219), k = 200")
